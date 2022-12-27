@@ -1,0 +1,526 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700");
+nav, div, body, input, select, textarea, button, h2, h3, h4, h5, h6, p, a, span, table, tr, td, th, ul, li, a {
+  box-sizing: border-box;
+  outline: none; }
+
+body {
+  height: auto;
+  width: 100%;
+  margin: 0;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  background: #fff;
+  background-attachment: fixed;
+  transition: all 0.5s ease-in-out;
+  font-family: 'Open Sans', sans-serif; }
+
+.container {
+  display: block;
+  position: relative;
+  height: auto;
+  top: 60px; }
+
+/*
+NOTE: User MUST be able to:
+1. Change background colour top navigation bar
+2. remove borders or adjuct thinkness
+3. Add drop shadows with the ability for adjustments
+4. Change menu icon colour and background
+5. Change side menu backgorund
+6. Add/Remove borders in side menu
+6. Change hover state colours
+7. Add/Remove title in side menu
+8. Change menu item text and background colour
+*/
+.top-nav {
+  height: 60px;
+  position: fixed;
+  width: 100%;
+  border-bottom: 1px solid #d4d4d4; }
+  .top-nav h2 {
+    float: left; }
+  .top-nav a {
+    float: right;
+    width: 60px;
+    height: 60px;
+    border-left: 1px solid #d4d4d4; }
+
+body.expand {
+  left: -320px; }
+  body.expand .overlay {
+    visibility: visible;
+    opacity: 0.8; }
+
+.overlay {
+  background: #000;
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out; }
+
+.off-canvas {
+  width: 320px;
+  background: #eee;
+  position: fixed;
+  right: -320px;
+  top: 0;
+  transition: all 0.5s ease-in-out;
+  height: 100vh; }
+  .off-canvas.open {
+    right: 0;
+    transition: all 0.5s ease-in-out; }
+  .off-canvas.open .menu-content {
+    opacity: 1;
+    transition: all 0.5s ease-in-out; }
+  .off-canvas .menu-content {
+    opacity: 0;
+    transition: all 0.5s ease-in-out; }
+  .off-canvas h2 {
+    text-align: center;
+    height: 60px;
+    color: #777;
+    width: 100%;
+    padding: 10px 20px;
+    margin: 0;
+    border-bottom: 1px solid #d4d4d4; }
+  .off-canvas ul {
+    margin: 0;
+    padding: 0 0 10px;
+    overflow-y: scroll;
+    height: calc(100vh - 80px); }
+  .off-canvas li {
+    list-style: none;
+    position: relative;
+    height: auto; }
+    .off-canvas li a {
+      padding: 15px 0;
+      margin: 0 10px;
+      border-bottom: 1px solid #d4d4d4;
+      position: relative;
+      height: auto;
+      display: block; }
+    .off-canvas li a.active {
+      margin: 0;
+      padding: 15px 10px;
+      color: #ccc;
+      font-weight: bold;
+      background: #e1e0e0; }
+  .off-canvas li.active {
+    background: #e1e0e0; }
+    .off-canvas li.active::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #e1e0e0;
+      left: -10px; }
+
+* {
+  transition: .25s ease-in-out;
+  box-sizing: border-box; }
+
+#menu-toggle {
+  width: 50px;
+  height: 50px;
+  float: right;
+  margin: 0 auto;
+  position: relative;
+  position: relative;
+  cursor: pointer;
+  border-radius: 5px; }
+  #menu-toggle span {
+    display: block;
+    background: #d4d4d4;
+    border-radius: 2px; }
+  #menu-toggle #hamburger {
+    position: absolute;
+    top: 10px;
+    height: 100%;
+    width: 100%; }
+    #menu-toggle #hamburger span {
+      width: 35px;
+      height: 4px;
+      position: relative;
+      top: -3px;
+      left: 3px;
+      margin: 8px 0; }
+      #menu-toggle #hamburger span:nth-child(1) {
+        transition-delay: .5s; }
+      #menu-toggle #hamburger span:nth-child(2) {
+        transition-delay: .625s; }
+      #menu-toggle #hamburger span:nth-child(3) {
+        transition-delay: .75s; }
+  #menu-toggle #cross {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 5px;
+    right: 5px;
+    transform: rotate(45deg); }
+    #menu-toggle #cross span:nth-child(1) {
+      height: 0%;
+      width: 4px;
+      position: absolute;
+      top: 10%;
+      left: 23px;
+      transition-delay: 0s; }
+    #menu-toggle #cross span:nth-child(2) {
+      width: 0%;
+      height: 4px;
+      position: absolute;
+      left: 10%;
+      top: 23px;
+      transition-delay: .25s; }
+
+#menu-toggle.open #hamburger span {
+  width: 0%; }
+  #menu-toggle.open #hamburger span:nth-child(1) {
+    transition-delay: 0s; }
+  #menu-toggle.open #hamburger span:nth-child(2) {
+    transition-delay: .125s; }
+  #menu-toggle.open #hamburger span:nth-child(3) {
+    transition-delay: .25s; }
+#menu-toggle.open #cross span:nth-child(1) {
+  height: 80%;
+  transition-delay: .625s; }
+#menu-toggle.open #cross span:nth-child(2) {
+  width: 80%;
+  transition-delay: .375s; }
+
+@media only screen and (max-width: 600px) {
+  body.expand {
+    left: calc(-100% + 70px); }
+
+  .off-canvas {
+    width: calc(100% - 70px);
+    right: calc(-100% + 70px); } }
+.tbl-container {
+  display: inline-block;
+  position: relative;
+  width: calc(100% - 20px);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  overflow: hidden; }
+  .tbl-container table {
+    display: table;
+    position: relative;
+    width: 100%;
+    border-collapse: collapse; }
+    .tbl-container table th {
+      padding: 5px;
+      background: #777;
+      text-align: left;
+      color: #fff; }
+    .tbl-container table td {
+      padding: 5px;
+      color: #777; }
+    .tbl-container table tr:nth-child(even) {
+      background: #eee; }
+
+.dropdown {
+  display: block;
+  margin: 10px;
+  background: #eee;
+  border-radius: 5px;
+  height: 40px; }
+  .dropdown:hover {
+    height: 250px; }
+    .dropdown:hover .selected {
+      border-bottom: 1px solid #ccc; }
+      .dropdown:hover .selected i {
+        transform: rotate(180deg);
+        animation: rotation 0.3s linear; }
+    .dropdown:hover .selection {
+      opacity: 1;
+      visibility: visible; }
+      .dropdown:hover .selection.search ul {
+        height: 150px; }
+      .dropdown:hover .selection ul {
+        height: 210px; }
+  .dropdown input {
+    width: calc(100% - 20px);
+    border: none;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.5);
+    height: 35px;
+    font-size: 15px;
+    padding: 10px;
+    margin: 10px 10px 15px; }
+  .dropdown .selected {
+    padding: 7px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    text-align: left; }
+    .dropdown .selected i {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      color: #777; }
+    .dropdown .selected.placeholder {
+      color: #777;
+      text-align: center; }
+  .dropdown .selection {
+    opacity: 0;
+    visibility: hidden; }
+    .dropdown .selection ul {
+      padding: 0;
+      margin: 0;
+      height: 0;
+      overflow-y: scroll; }
+      .dropdown .selection ul li {
+        list-style: none; }
+        .dropdown .selection ul li a {
+          display: inline-block;
+          width: 100%;
+          padding: 10px 20px;
+          font-size: 15px;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+          cursor: pointer; }
+          .dropdown .selection ul li a:hover {
+            background: rgba(0, 0, 0, 0.05); }
+        .dropdown .selection ul li:last-child a {
+          border: none;
+          border-radius: 0 0 5px 5px; }
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg); }
+  to {
+    transform: rotate(180deg); } }
+.btn button {
+  display: inline-block;
+  width: calc(100% - 20px);
+  margin: 10px;
+  height: 45px;
+  background: #ccc;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  color: #777;
+  font-size: 17px; }
+  .btn button:hover {
+    background: transparent; }
+
+.checkbox {
+  width: 100%;
+  display: block;
+  padding: 5px 10px; }
+  .checkbox span {
+    position: relative;
+    font-size: 15px;
+    padding: 0 0 0 30px; }
+    .checkbox span:before {
+      position: absolute;
+      font-family: "Font Awesome 5 Free";
+      content: '\f0c8';
+      left: 0;
+      font-size: 20px;
+      color: #ccc;
+      transition: all 0.3s ease-in-out; }
+  .checkbox input[type='checkbox'] {
+    display: none; }
+    .checkbox input[type='checkbox']:checked ~ span:before {
+      font-family: "Font Awesome 5 Free";
+      content: '\f14a';
+      color: green; }
+
+/* The radio */
+.radio {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+/* Hide the browser's default radio button */
+.radio input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer; }
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 22px;
+  width: 22px;
+  background-color: #eee;
+  border-radius: 50%; }
+
+/* On mouse-over, add a grey background color */
+.radio:hover input ~ .checkmark {
+  background-color: #ccc; }
+
+/* When the radio button is checked, add a blue background */
+.radio input:checked ~ .checkmark {
+  background-color: #777; }
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none; }
+
+/* Show the indicator (dot/circle) when checked */
+.radio input:checked ~ .checkmark:after {
+  display: block; }
+
+/* Style the indicator (dot/circle) */
+.radio .checkmark:after {
+  top: 6.7px;
+  left: 7.3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white; }
+
+.inputbox {
+  position: relative;
+  display: inline-block;
+  width: calc(100% - 20px);
+  margin: 5px 10px;
+  background: #eee;
+  border-radius: 5px; }
+  .inputbox.det {
+    padding: 25px 0 0; }
+    .inputbox.det i {
+      top: 5px;
+      right: 0; }
+  .inputbox.focus .placeholder {
+    font-size: 10px;
+    color: #ccc;
+    top: 5px; }
+    .inputbox.focus .placeholder.text {
+      font-size: 10px;
+      top: 10px;
+      left: 0; }
+  .inputbox.focus i {
+    color: #eee; }
+  .inputbox i {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    color: #ccc; }
+  .inputbox .placeholder {
+    position: absolute;
+    color: #ccc;
+    font-size: 14px;
+    top: 13px;
+    left: 10px;
+    transition: all 0.3s ease-in-out; }
+    .inputbox .placeholder.text {
+      font-size: 14px;
+      top: 30px;
+      left: 0; }
+  .inputbox input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    position: relative;
+    padding: 25px 35px 10px 10px;
+    height: 45px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out; }
+    .inputbox input.title {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 25px;
+      font-weight: 300; }
+  .inputbox textarea {
+    background: transparent;
+    min-width: 100%;
+    max-width: 100%;
+    padding: 0;
+    min-height: 120px;
+    border: none;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    border-radius: 5px;
+    padding: 0;
+    transition: all 0.3s ease-in-out; }
+    .inputbox textarea:focus {
+      padding: 15px;
+      background: rgba(225, 225, 225, 0.5); }
+
+.textlongbox {
+  position: relative;
+  display: inline-block;
+  width: calc(100% - 20px);
+  margin: 5px 10px;
+  padding: 25px 0 0 10px;
+  background: #eee;
+  border-radius: 5px; }
+  .textlongbox.det {
+    padding: 25px 0 0; }
+    .textlongbox.det i {
+      top: 5px;
+      right: 0; }
+  .textlongbox.focus {
+    background: rgba(225, 225, 225, 0.5); }
+    .textlongbox.focus .placeholder {
+      font-size: 10px;
+      color: #ccc;
+      top: 5px; }
+      .textlongbox.focus .placeholder.text {
+        font-size: 10px;
+        top: 10px;
+        left: 0; }
+    .textlongbox.focus i {
+      color: #eee; }
+  .textlongbox i {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    color: #ccc; }
+  .textlongbox .placeholder {
+    position: absolute;
+    color: #ccc;
+    font-size: 14px;
+    top: 13px;
+    left: 10px;
+    transition: all 0.3s ease-in-out; }
+    .textlongbox .placeholder.text {
+      font-size: 14px;
+      top: 30px;
+      left: 0; }
+  .textlongbox input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    position: relative;
+    padding: 25px 35px 10px 10px;
+    height: 45px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out; }
+    .textlongbox input.title {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 25px;
+      font-weight: 300; }
+  .textlongbox textarea {
+    background: transparent;
+    min-width: 100%;
+    max-width: 100%;
+    padding: 0;
+    min-height: 120px;
+    border: none;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    border-radius: 5px;
+    padding: 0;
+    transition: all 0.3s ease-in-out;
+    font-size: 15px;
+    padding: 0 10px 0 0; }
+
+/*# sourceMappingURL=master.comp.css.map */

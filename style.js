@@ -1,0 +1,1 @@
+var STYLES = {"primary":"#3c3c3c","secondary":"#fff","primary_txt":"#ffff","secondary_txt":"#06262D","standard_txt":"#333","highlight":"","theme":"light","iconLocal":"icon.png","iconRemote":"icon.png"}
