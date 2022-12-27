@@ -287,7 +287,7 @@
 			$scope.defaultWC="";
 			$scope.defaultWCCode="";
 			$scope.selectedWorkcentre = {};
-			$scope.selectedUser = {};
+			$scope.selectedSite = {};
 			$scope.selectedJob = {};
 			$scope.jobACGroup="";
 
@@ -789,6 +789,14 @@
 						$scope.msgOnError('Job Code Required', 'Please enter Job Code');
 						return false;
 					};
+					if ($scope.selectedUserNameList == [] || $scope.selectedUserNameList.length == 0) {
+						$scope.msgOnError('User is Required', 'Please select atleast one user');
+						return false;
+					};
+					if ($scope.selectedSite.FullName == '' || $scope.selectedSite.FullName == null || $scope.selectedSite.FullName == undefined ) {
+						$scope.msgOnError('Site is Required', 'Please select atleast one site');
+						return false;
+					};
 
 					if ($scope.defaultWCCode == undefined || $scope.defaultWCCode == "")  {
 						/*$scope.msgOnError('Workcenter Required', 'Please select Workcenter');
@@ -803,10 +811,10 @@
 						});
 					};
 					
-					if ($scope.selectedUser.Code == undefined || $scope.selectedUser.Code == "")  {
-						$scope.msgOnError('Activity Code Required', 'Please enter Activity Code');
-						return false;
-					};
+					// if ($scope.selectedUser.Code == undefined || $scope.selectedUser.Code == "")  {
+					// 	$scope.msgOnError('Activity Code Required', 'Please enter Activity Code');
+					// 	return false;
+					// };
 
 					if(!$scope.travel && param == 'Daily' && $scope.newLineItems.length == 0){
 						if ($scope.time.hoursWorked == "0.00" || $scope.time.hoursWorked == "00:00")
@@ -1312,8 +1320,6 @@
 			};
 
 			$scope.createTimesheet = function (param, submit) {
-
-
 				if (!$scope.checkDataEntry(param)) {
 					return;
 				};
@@ -1368,17 +1374,13 @@
 							LineItem.selectedUserNameList = $scope.selectedUserNameList;
 							LineItem.selectedUserList = $scope.selectedUserList;
                     	};
-						if($scope.travel){
-						};
+						
 					};
 					if(param == 'Daily'){
 						if (submit == false) {
 							LineItem.selectedUserNameList = $scope.selectedUserNameList;
 							LineItem.selectedUserList = $scope.selectedUserList;
                     	};
-						if($scope.travel){
-
-						};
 					};
 				}
 				catch (err){
@@ -1397,53 +1399,6 @@
 
 				};*/
 
-				try {					
-					if(!$scope.travel){
-						if((param == 'Weekly') && ($scope.hoursperday[7].Hours == 0 || $scope.hoursperday[7].Hours == "0:00")){
-							$scope.msgOnError('Timesheet', 'No daily time entered.');
-							return;
-						}
-					}
-				}
-				catch (err){
-
-				};
-
-
-
-				$scope.postTimesheetEntry ={};
-				var newNotes ="";
-				var genDataNewNotes ="";
-				if($scope.MakeModel!=""){
-					var mm = angular.copy($scope.MakeModel);
-					var rf = angular.copy($scope.RegoFleet);					
-					var sv = angular.copy($scope.SerialVIN);
-					var kh = angular.copy($scope.KMHrS);
-					if(mm.includes("\r\n")){						
-						mm=mm.replace("\r\n","");
-					};
-					if(rf.includes("\r\n")){				
-						rf=rf.replace("\r\n","");
-					};
-					if(sv.includes("\r\n")){
-						sv=sv.replace("\r\n","");
-					};
-					if(kh.includes("\r\n")){
-						kh=kh.replace("\r\n","");
-					};
-					
-					newNotes = "Make/Model:"+ mm+
-						"%5Cr%5CnRego/Fleet:"+rf +
-						"%5Cr%5CnSerial/VIN:"+sv +
-						"%5Cr%5CnKms/Hours:"+kh + 
-						"%5Cr%5Cn"+ $scope.NotesLeft;
-					genDataNewNotes = "Make/Model:"+ mm+
-						"%5Cr%5CnRego/Fleet:"+rf +
-						"%5Cr%5CnSerial/VIN:"+sv +
-						"%5Cr%5CnKms/Hours:"+kh + 
-						"  "+ $scope.NotesLeft;	
-				};
-				
 				var dat = new Date();
 				if (param === 'Weekly') {
 					$scope.lockWeekly = true;			
@@ -1549,9 +1504,10 @@
 						LineItem.Job = $scope.jobcode;
 						LineItem.PayGroup = $scope.PayGroup;
 						LineItem.JobFullName = $scope.jobname;
-						LineItem.ActivityCode =  $scope.selectedUser.Code;
-						LineItem.HRTransTypePay =  $scope.selectedUser.Code;
-						LineItem.ActivityFullName = $scope.selectedUser.FullName;
+						// LineItem.ActivityCode =  $scope.selectedUser.Code;
+						// LineItem.HRTransTypePay =  $scope.selectedUser.Code;
+						// LineItem.ActivityFullName = $scope.selectedSite.FullName;
+						LineItem.SiteFullName = $scope.selectedSite.FullName;
 						LineItem.WorkCentre =$scope.defaultWCCode;
 						LineItem.WorkCentreWithDisc = $scope.defaultWC;
 						LineItem.Travel = $scope.travel;
@@ -1711,8 +1667,9 @@
 							newLineItem.Job = $scope.jobcode;
 							newLineItem.JobFullName = $scope.jobname;
 							newLineItem.PayGroup = $scope.PayGroup;
-							newLineItem.MainActivityCode =  $scope.selectedUser.Code;
-							newLineItem.MainActivityFullName = $scope.selectedUser.FullName;
+							// newLineItem.MainActivityCode =  $scope.selectedUser.Code;
+							// newLineItem.MainActivityFullName = $scope.selectedUser.FullName;
+							newLineItem.MainSiteFullName = $scope.selectedSite.FullName;
 							newLineItem.ActivityFullName = $scope.newLineItems[m].ActivityFullName;
 							newLineItem.Travel = $scope.travel;
 							if (submit == false) {
@@ -1793,9 +1750,10 @@
 							LineItem.TAG = newTimeEntry.TAG;
 							LineItem.Job = $scope.jobcode;
 							LineItem.JobFullName = $scope.jobname;
-							LineItem.ActivityCode =  $scope.selectedUser.Code;
-							LineItem.HRTransTypePay =  $scope.selectedUser.Code;
-							LineItem.ActivityFullName = $scope.selectedUser.FullName;
+							// LineItem.ActivityCode =  $scope.selectedUser.Code;
+							// LineItem.HRTransTypePay =  $scope.selectedUser.Code;
+							// LineItem.ActivityFullName = $scope.selectedUser.FullName;
+							LineItem.SiteFullName = $scope.selectedSite.FullName;
 							LineItem.PayGroup = $scope.PayGroup;
 							LineItem.WorkCentre =$scope.defaultWCCode;
 							LineItem.WorkCentreWithDisc = $scope.defaultWC;
@@ -3268,8 +3226,8 @@
 										$scope.selectedJobObj = $scope.timesheets[i].LineItems[j].JobObj;
 										$scope.defaultWCCode = $scope.timesheets[i].LineItems[j].WorkCentre;
 										$scope.defaultWC = $scope.timesheets[i].LineItems[j].WorkCentreWithDisc;
-										$scope.selectedUser.Code = $scope.timesheets[i].LineItems[j].ActivityCode;
-										$scope.selectedUser.FullName = $scope.timesheets[i].LineItems[j].ActivityFullName;
+										// $scope.selectedUser.Code = $scope.timesheets[i].LineItems[j].ActivityCode;
+										$scope.selectedSite.FullName = $scope.timesheets[i].LineItems[j].SiteFullName;
 										$scope.selectedUserNameList = $scope.timesheets[i].LineItems[j].selectedUserNameList;
 										if($scope.connectionStatus == 'TRUE'){
 											$scope.loadingInit = true;
@@ -3295,8 +3253,9 @@
 
 									if($scope.timesheets[i].LineItems[j].ActivityType =='Disbursement') {
 										try{
-											$scope.selectedUser.Code = $scope.timesheets[i].LineItems[j].MainActivityCode;
-											$scope.selectedUser.FullName = $scope.timesheets[i].LineItems[j].MainActivityFullName;
+											// $scope.selectedSite.Code = $scope.timesheets[i].LineItems[j].MainActivityCode;
+											// $scope.selectedSite.FullName = $scope.timesheets[i].LineItems[j].MainActivityFullName;
+											$scope.selectedSite.FullName = $scope.timesheets[i].LineItems[j].MainSiteFullName;
 											if($scope.timesheets[i].LineItems[j].Quantity.includes(':')){
 												$scope.timesheets[i].LineItems[j].Quantity = parseFloat($scope.timesheets[i].LineItems[j].Quantity.replace(':','.'));
 											}
@@ -3359,8 +3318,9 @@
 
 										$scope.defaultWCCode = $scope.timesheets[i].LineItems[j].WorkCentre;
 										$scope.defaultWC = $scope.timesheets[i].LineItems[j].WorkCentreWithDisc;
-										$scope.selectedUser.Code = $scope.timesheets[i].LineItems[j].ActivityCode;
-										$scope.selectedUser.FullName = $scope.timesheets[i].LineItems[j].ActivityFullName;
+										// $scope.selectedUser.Code = $scope.timesheets[i].LineItems[j].ActivityCode;
+										// $scope.selectedUser.FullName = $scope.timesheets[i].LineItems[j].ActivityFullName;
+										$scope.selectedSite.FullName = $scope.timesheets[i].LineItems[j].SiteFullName;
 										
 										
 										$scope.DailyUlb = $scope.timesheets[i].LineItems[j].DailyUlb;
@@ -3454,8 +3414,9 @@
 
 									$scope.defaultWCCode = $scope.timesheets[i].LineItems[j].WorkCentre;
 									$scope.defaultWC = $scope.timesheets[i].LineItems[j].WorkCentreWithDisc;
-									$scope.selectedUser.Code = $scope.timesheets[i].LineItems[j].ActivityCode;
-									$scope.selectedUser.FullName = $scope.timesheets[i].LineItems[j].ActivityFullName;
+									// $scope.selectedUser.Code = $scope.timesheets[i].LineItems[j].ActivityCode;
+									// $scope.selectedUser.FullName = $scope.timesheets[i].LineItems[j].ActivityFullName;
+									$scope.selectedSite.FullName = $scope.timesheets[i].LineItems[j].SiteFullName;
 									
 									/*signature need to be cleared*/
 									$scope.timesheets[i].LineItems[j].signature ="";
@@ -3572,7 +3533,7 @@
 
 						if ($scope.Activities[x] !== undefined) {
 							if ($scope.Activities[x].Code === $scope.lineItem.ActivityCode) {
-								$scope.selectedUser = $scope.Activities[x];
+								$scope.selectedSite = $scope.Activities[x];
 								break;
 							};
 						};
@@ -3698,7 +3659,7 @@
 					if($scope.connectionStatus == 'TRUE'){
 						$scope.WCS = [];
 						$scope.defaultWC="";
-						$scope.selectedUser= {};
+						$scope.selectedSite= {};
 						$scope.Activities= []
 					
 						$scope.MakeModel="";
@@ -3774,12 +3735,12 @@
 				};
 
 			};
-			$scope.setSelectedUser = function (ActivityItem){
+			$scope.setSelectedSite = function (ActivityItem){
 				if(ActivityItem===undefined || ActivityItem===''){
-					$scope.selectedUser = {};
+					$scope.selectedSite = {};
 				}else{
-					$scope.selectedUser = ActivityItem;
-					$scope.selectedUser.FullName = ActivityItem.Title;
+					$scope.selectedSite = ActivityItem;
+					$scope.selectedSite.FullName = ActivityItem.Title;
 					// if($scope.connectionStatus == 'TRUE'){
 					// 	if(ActivityItem.DefaultWorkCentre != $scope.defaultWCCode){
 					// 		$scope.currentStatus = "Loading default workcentre of AC";
@@ -3795,7 +3756,7 @@
 			};
 			$scope.setSelectedDisActivity = function (ActivityItem, index){
 				if(ActivityItem===undefined || ActivityItem===''){
-					$scope.selectedUser = {};
+					$scope.selectedSite = {};
 				}else{
 					$scope.newLineItems[index].ActivityCode = ActivityItem.Value1;
 					/*$scope.newLineItems[index].Quantity = 1;*/
@@ -3867,7 +3828,7 @@
 								if(item.Code == $scope.empActivityCode){
 									$scope.selectedUser = item;
 									$scope.selectedUser.FullName = item.Code+" - "+item.Description;
-									$scope.setSelectedUser(item);
+									$scope.setSelectedSite(item);
 									return false;
 								}
 								else return true;
@@ -3890,10 +3851,10 @@
               	$scope.defaultWC="";
               	$scope.WCS = [];
               	$scope.Activities= []
-				$scope.selectedUser= {};
+				$scope.selectedSite= {};
 			};
 			$scope.resetActivity = function () {
-				$scope.selectedUser = {};
+				$scope.selectedSite = {};
 				
 			};
 
@@ -4178,7 +4139,9 @@
 				$scope.lockDaily =true;
 				$scope.lockWeekly =true;
 				$scope.typeOfTimeSheet = param;
+				for(let i=0; i<$scope.AllUserList.length; i++){$scope.AllUserList[i].check = false};
 				$scope.selectedUserNameList = [];
+				$scope.selectedUserList = [];
 
 				$scope.showMoreEntry =false;
 				$scope.MakeModel = "";
@@ -6654,22 +6617,22 @@
 			$scope.checkToknUser = function (userID){
                 var index =0;
                 /*do not use index here, because it changes when searching*/
-                for(var a=0; a<$scope.ToknUserList.length;a++){
-                    if($scope.ToknUserList[a].userID == userID){
+                for(var a=0; a<$scope.AllUserList.length;a++){
+                    if($scope.AllUserList[a].userID == userID){
                         index = a;
                     };
                 };
 
-
-                if(!$scope.ToknUserList[index].check){
-                    $scope.ToknUserList[index].totalHours = $scope.time.hoursWorked;
-                    $scope.selectedUserList.push($scope.ToknUserList[index]);
+			
+                if(!$scope.AllUserList[index].check){
+                    $scope.AllUserList[index].totalHours = $scope.time.hoursWorked;
+                    $scope.selectedUserList.push($scope.AllUserList[index]);
                     $scope.updateUserNameList();
-                    // $scope.getEmployeeDetails($scope.ToknUserList[index].Code);
+                    // $scope.getEmployeeDetails($scope.AllUserList[index].Code);
 
                 }else{
                     for(var m=0; m<$scope.selectedUserList.length;m++){
-                        if($scope.selectedUserList[m].userID == $scope.ToknUserList[index].userID){
+                        if($scope.selectedUserList[m].userID == $scope.AllUserList[index].userID){
                             $scope.selectedUserList.splice(m,1);
                         };
                     };
@@ -7479,9 +7442,9 @@
 							};
 							initscope.Activities.every(item =>{
 								if(item.Code == initscope.empActivityCode){
-									initscope.selectedUser = item;
-									initscope.selectedUser.FullName = item.Code+" - "+item.Description;
-									initscope.setSelectedUser(item);
+									initscope.selectedSite = item;
+									initscope.selectedSite.FullName = item.Code+" - "+item.Description;
+									initscope.setSelectedSite(item);
 									return false;
 								}
 								else return true;
@@ -8560,7 +8523,7 @@
 				<!--User List Dropdown-->
                 <div class="dropdown" style="width:100%; margin-top: 4px;">
                     <div class="selected" ng-class="{focus: selectedUserNameList.length!= 0,lockdown: lockDaily==true }">
-                        <input type="text" class="input" ng-model="selectedUserNameList " name="act">
+                        <input type="text" class="input" ng-model="selectedUserNameList" name="act">
                         <div id="userListNewCodeEdit02" class="placeholder" onclick="dd_expand('#userListNewCodeEdit02')">
                             <span ng-if="selectedUserNameList.length== 0 ">Select User</span>
                             <span ng-if="selectedUserNameList.length!= 0">User</span>
@@ -8587,13 +8550,13 @@
 
 				<!-- Select Sites -->
 				<div class="dropdown" style="width:100%">
-					<div class="selected" ng-class="{focus: selectedUser.FullName !== undefined,lockdown: lockDaily==true }">
-						<input type="text" class="input" disabled="" ng-model="selectedUser.FullName" name="act" ng-value="selectedUser.FullName">
+					<div class="selected" ng-class="{focus: selectedSite.FullName !== undefined,lockdown: lockDaily==true }">
+						<input type="text" class="input" disabled="" ng-model="selectedSite.FullName" name="act" ng-value="selectedSite.FullName">
 						
 						<!-- <div id="activityNewCodeEdit02" class="placeholder" > -->
 						<div id="activityNewCodeEdit02" class="placeholder" onclick="dd_expand('#activityNewCodeEdit02')">
-							<span ng-click="showErrorIfNotSelectedJob('#activityNewCodeEdit02')" ng-if="selectedUser.FullName  == undefined &amp;&amp; !loadingAC">Select Site</span>
-							<span ng-if="selectedUser.FullName !== undefined &amp;&amp; !loadingAC">Site</span>
+							<span ng-click="showErrorIfNotSelectedJob('#activityNewCodeEdit02')" ng-if="selectedSite.FullName  == undefined &amp;&amp; !loadingAC">Select Site</span>
+							<span ng-if="selectedSite.FullName !== undefined &amp;&amp; !loadingAC">Site</span>
 						</div>
 						<i class="drop-down-arrow"></i>
 						<!-- <div ng-show="loadingAC" class="icon-container">
@@ -8612,7 +8575,7 @@
 						<ul>
 							<li ng-repeat="site in SitesList | filter: activityFilter ">
 								
-								<a ng-click="checkAppOnlineOrOffline();setSelectedUser(site);" onclick="dd_expand('#activityNewCodeEdit02')">
+								<a ng-click="checkAppOnlineOrOffline();setSelectedSite(site);" onclick="dd_expand('#activityNewCodeEdit02')">
 								{{site.Title}}</a>
 							</li>
                           	<a style="margin: 0 20px;" ng-if="SitesList.length == 0">No Activity Codes </a>
@@ -8873,9 +8836,9 @@
 				
 				<!--User List Dropdown-->
                 <div class="dropdown" style="width:100%; margin-top: 4px;">
-                    <div class="selected" ng-class="{focus: selectedUserNameList.length!= 0,lockdown: lockDaily==true }">
-                        <input type="text" class="input" ng-model="selectedUserNameList " name="act">
-                        <div id="userListNewCodeEdit02" class="placeholder" onclick="dd_expand('#userListNewCodeEdit02')">
+                    <div class="selected" ng-class="{focus: selectedUserNameList.length!= 0,lockdown: lockWeekly==true }">
+                        <input type="text" class="input" ng-model="selectedUserNameList" name="act">
+                        <div id="userSelectedEdit01" class="placeholder" onclick="dd_expand('#userSelectedEdit01')">
                             <span ng-if="selectedUserNameList.length== 0 ">Select User</span>
                             <span ng-if="selectedUserNameList.length!= 0">User</span>
                         </div>
@@ -8901,13 +8864,13 @@
 
 				<!-- Select Sites -->
 				<div class="dropdown" style="width:100%">
-					<div class="selected" ng-class="{focus: selectedUser.FullName !== undefined,lockdown: lockDaily==true }">
-						<input type="text" class="input" disabled="" ng-model="selectedUser.FullName" name="act" ng-value="selectedUser.FullName">
+					<div class="selected" ng-class="{focus: selectedSite.FullName !== undefined,lockdown: lockWeekly==true }">
+						<input type="text" class="input" disabled="" ng-model="selectedSite.FullName" name="act" ng-value="selectedSite.FullName">
 						
-						<!-- <div id="activityNewCodeEdit02" class="placeholder" > -->
-						<div id="activityNewCodeEdit02" class="placeholder" onclick="dd_expand('#activityNewCodeEdit02')">
-							<span ng-click="showErrorIfNotSelectedJob('#activityNewCodeEdit02')" ng-if="selectedUser.FullName  == undefined &amp;&amp; !loadingAC">Select Site</span>
-							<span ng-if="selectedUser.FullName !== undefined &amp;&amp; !loadingAC">Site</span>
+						<!-- <div id="userSelectedEdit" class="placeholder" > -->
+						<div id="userSelectedEdit02" class="placeholder" onclick="dd_expand('#userSelectedEdit02')">
+							<span ng-click="showErrorIfNotSelectedJob('#userSelectedEdit02')" ng-if="selectedSite.FullName  == undefined &amp;&amp; !loadingAC">Select Site</span>
+							<span ng-if="selectedSite.FullName !== undefined &amp;&amp; !loadingAC">Site</span>
 						</div>
 						<i class="drop-down-arrow"></i>
 						<!-- <div ng-show="loadingAC" class="icon-container">
@@ -8926,7 +8889,7 @@
 						<ul>
 							<li ng-repeat="site in SitesList | filter: activityFilter ">
 								
-								<a ng-click="checkAppOnlineOrOffline();setSelectedUser(site);" onclick="dd_expand('#activityNewCodeEdit02')">
+								<a ng-click="checkAppOnlineOrOffline();setSelectedSite(site);" onclick="dd_expand('#userSelectedEdit02')">
 								{{site.Title}}</a>
 							</li>
                           	<a style="margin: 0 20px;" ng-if="SitesList.length == 0">No Activity Codes </a>
