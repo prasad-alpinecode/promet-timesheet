@@ -325,9 +325,7 @@ body {
     color: #000;
     font-size: 17px;
     top: 13px;
-    left: calc(50% - 85px);
-    left: -moz-calc(50% - 85px); 
-    left: -webkit-calc(50% - 85px);
+    left: 10px;
     width: auto;
     text-align: center;
     transition: all 0.3s ease-in-out; }

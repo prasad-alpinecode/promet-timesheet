@@ -159,7 +159,7 @@
 			};
 			$scope.loadingJob = false;
 			$scope.ListManagers = [];
-			$scope.showEmail =false;
+			$scope.showEmail =true;
 			$scope.postTimesheetEntry ={};
 			$scope.ToknUserList = [];
 			$scope.AllUserList = [];
@@ -287,7 +287,7 @@
 			$scope.defaultWC="";
 			$scope.defaultWCCode="";
 			$scope.selectedWorkcentre = {};
-			$scope.selectedSite = {};
+			$scope.selectedActivity = {};
 			$scope.selectedJob = {};
 			$scope.jobACGroup="";
 
@@ -323,6 +323,7 @@
 			$scope.editTAG = "None";
 			$scope.selectedWeekEnding = 0;
 			$scope.jobname = "";
+			$scope.jobDesc = "";
 			$scope.StandardText = "";
 			$scope.signatureName = "";
 			$scope.signature = "";
@@ -386,7 +387,11 @@
 			$scope.SitesList = [];
 			$scope.selectedUserList = [];
 			$scope.selectedUserNameList = [];
+			$scope.selectedSite = {};
+			$scope.TravelDataDaily = {travelHr:"",standBy:"",delay:""}
 
+		
+			
 			$scope.emailJSON = {
 				"personalizations": [
 					{
@@ -422,7 +427,7 @@
 			$scope.perDayTravelHr =[0,0,0,0,0,0,0];
 			$scope.perDayTravelKm =[0,0,0,0,0,0,0];
 			$scope.tempNewEntry = {};
-			$scope.loadingInit= true;
+			// $scope.loadingInit= true;
 			$scope.currentStatus = "";
 			$scope.leaveRequestData = [];
 			$scope.leaveCodes = [];
@@ -632,26 +637,36 @@
 				};
 				return input;
 			};
+			
+
 			$scope.resetHoursPerDay = function () {
 				$scope.hoursperday = [
-					{ "Day": "Mon", "Hours": 0, "Date": "", "startTime": "", "endTime": "","travelHr": 0  },
-					{ "Day": "Tue", "Hours": 0, "Date": "", "startTime": "", "endTime": "","travelHr": 0  },
-					{ "Day": "Wed", "Hours": 0, "Date": "", "startTime": "", "endTime": "","travelHr": 0  },	
-					{ "Day": "Thu", "Hours": 0, "Date": "", "startTime": "", "endTime": "","travelHr": 0  },
-					{ "Day": "Fri", "Hours": 0, "Date": "", "startTime": "", "endTime": "","travelHr": 0  },
-					{ "Day": "Sat", "Hours": 0, "Date": "", "startTime": "", "endTime": "","travelHr": 0  },
-					{ "Day": "Sun", "Hours": 0, "Date": "", "startTime": "", "endTime": "","travelHr": 0 },
-					{ "Day": "Total", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": 0  }
+					{ "Id":0, "Day": "Sun", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":"" },
+					{ "Id":1, "Day": "Mon", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":2, "Day": "Tue", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":3, "Day": "Wed", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":4, "Day": "Thu", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":5, "Day": "Fri", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":6, "Day": "Sat", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":7, "Day": "Sun", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":8, "Day": "Mon", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":9, "Day": "Tue", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":10, "Day": "Wed", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":11, "Day": "Thu", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":12, "Day": "Fri", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":13, "Day": "Sat", "Hours": 0, "Date": "", "startTime": "", "endTime": "", "travelHr": "", "travelKm": "", "standBy":"","delay":""},
+					{ "Id":14, "Day": "Total", "Hours": 0, "Date": "", "startTime": "", "endTime": "","extraHours":"" },
 				];
+
 			};
 
+			
 			$scope.calcDatePerDay = function (index) {
 				var days = [ "Monday", "Tuesday", "Wednesday","Thursday", "Friday", "Saturday","Sunday"];
 				var dat = $scope.selectDate;
-
-				for (x = 6; x > -1; x--) {
+				for (x = 0; x < 14; x++) {
 					var d = new Date(dat);
-					d.setDate(d.getDate() + (x - 6));
+					d.setDate(d.getDate() + (x));
 					dateformat = $scope.getddmmyyyy(d);
 					$scope.hoursperday[x].Date = dateformat;
 				};
@@ -726,7 +741,7 @@
 				var hours = parseInt(totalmins / 60).toString();
 				mins = (totalmins % 60).toString();
 				/*mins = (mins/60).toFixed(2);*/
-				$scope.hoursperday[7].Hours = hours + ":" + ("0" + mins).slice(-2);
+				$scope.hoursperday[14].Hours = hours + ":" + ("0" + mins).slice(-2);
 
 				/*cal total travel hours*/
 			};
@@ -789,6 +804,7 @@
 						$scope.msgOnError('Job Code Required', 'Please enter Job Code');
 						return false;
 					};
+
 					if ($scope.selectedUserNameList == [] || $scope.selectedUserNameList.length == 0) {
 						$scope.msgOnError('User is Required', 'Please select atleast one user');
 						return false;
@@ -798,24 +814,6 @@
 						return false;
 					};
 
-					if ($scope.defaultWCCode == undefined || $scope.defaultWCCode == "")  {
-						/*$scope.msgOnError('Workcenter Required', 'Please select Workcenter');
-						return false;*/
-						$scope.defaultWCCode = $scope.UserDefaultWorkCentre[0];
-						$scope.allWorkCentreList.every(item =>{
-							if(item.Code == $scope.UserDefaultWorkCentre[0]){
-								$scope.defaultWC = item.Description;
-								return false;
-							}
-							return true;
-						});
-					};
-					
-					// if ($scope.selectedUser.Code == undefined || $scope.selectedUser.Code == "")  {
-					// 	$scope.msgOnError('Activity Code Required', 'Please enter Activity Code');
-					// 	return false;
-					// };
-
 					if(!$scope.travel && param == 'Daily' && $scope.newLineItems.length == 0){
 						if ($scope.time.hoursWorked == "0.00" || $scope.time.hoursWorked == "00:00")
 						{
@@ -824,33 +822,6 @@
 						};
 					}
 
-					if($scope.IsleaveJobTrue){
-						var leaveRequestExist = false;
-						var index; 
-						for(let i=0; i<$scope.leaveRequestData.length; i++){
-							var dateFrom = moment(new Date(parseInt($scope.leaveRequestData[i].DateFrom.match(/\d+/)[0])).setHours(0,0,0,0));
-							var dateTo = moment(new Date(parseInt($scope.leaveRequestData[i].DateTo.match(/\d+/)[0])).setHours(0,0,0,0));
-							if(moment($scope.selectDate.setHours(0,0,0,0)) >= dateFrom && moment($scope.selectDate.setHours(0,0,0,0)) <= dateTo){
-								index = i;
-								leaveRequestExist = true;
-								break;
-							};
-						};
-						if(leaveRequestExist && $scope.leaveRequestData[index].Status != 'Approved'){
-							$scope.msgOnError('Required Approval', 'You have no approved leave request for this time');
-							return false
-						};
-						// else if(!leaveRequestExist){
-						// 	$scope.msgOnError('No Leave Request', 'Please submit leave request');
-						// 	return false
-						// }
-					};
-					for(var x =0; x<$scope.newLineItems.length;x++){
-						if (($scope.newLineItems[x].ActivityCode== "") || ($scope.newLineItems[x].Quantity== null || $scope.newLineItems[x].Quantity== undefined || $scope.newLineItems[x].Quantity== "" || $scope.newLineItems[x].Quantity== 0)) {
-							$scope.msgOnError('Disbursements', 'Please select activity and enter hours for disbursements ');
-							return false;
-						};
-					};
 						
 				};
 				return true;
@@ -1319,7 +1290,74 @@
 				catch(err){};
 			};
 
+			$scope.getSignatureCapture = function (param) {
+				if ($scope.jobname ==""){
+					$scope.msgOnError('Timesheet', 'Please enter job number before signing.');
+					return;
+				};
+				if ((param == 'Daily') && ($scope.time.startTime == $scope.time.endTime ||$scope.time.hoursWorked === '0.00') && ($scope.travelHr ==0 || $scope.travelHr =="" ||$scope.travelHr==null)){
+					$scope.msgOnError('Timesheet', 'Please enter worked time or travel time before signing.');
+					return;
+				};
+
+				// if(param == 'Daily'){
+				// 	if($scope.travel){
+				// 		if($scope.travelHr===0||$scope.travelHr ==null ||$scope.travelHr =="" ){
+				// 			$scope.msgOnError('Travel details required', 'Please enter Travel Hours and Travel Kms');
+				// 			return;
+				// 		};
+				// 	};
+				// };
+
+				if (param == 'Weekly'){
+					var totalTravel =0;
+					for (var k = 0; k < $scope.hoursperday.length; k++) {
+						if ($scope.hoursperday[k].travelHr !="" && $scope.hoursperday[k].travelHr !=0) {
+							totalTravel += $scope.hoursperday[k].travelHr;
+						};
+					};
+
+					if(($scope.hoursperday[7].Hours == 0||$scope.hoursperday[7].Hours =="0:00")  && totalTravel ==0){
+						$scope.msgOnError('Timesheet', 'Please enter worked time or travel time before signing.');
+						return;
+					};
+
+					// if($scope.travel){
+					// 	if($scope.hoursperday[7].travelHr == 0 ||$scope.hoursperday[7].travelHr == undefined ){
+					// 		$scope.msgOnError('Travel details missing', '');
+					// 		return;
+					// 	};
+					// 	var countInvalidTraveled = 0;
+					// 	for(var i =0; i< $scope.hoursperday.length;i++){
+
+					// 		if( $scope.hoursperday[i].Day !="Total"){
+					// 			if(($scope.hoursperday[i].travelHr !=0&& $scope.hoursperday[i].travelHr!=null)
+					// 			||($scope.hoursperday[i].travelHr ==0 || $scope.hoursperday[i].travelHr==null)
+					// 			){
+					// 				countInvalidTraveled++;
+					// 			};
+					// 		};
+					// 	};
+					// 	/*if(countInvalidTraveled >0){
+					// 		$scope.msgOnError('Travel details missing', 'Please enter Travel hours if you traveled');
+					// 		return;
+					// 	};*/
+					// };
+				};
+				var uri = 'MiTokn{"Instr":"Signature","FunctionOnReturn":"signResponseCapture"}';
+				var link = encodeURI(uri);
+				window.location = link;
+			};
+
+			$scope.setSignatureCapture = function (data) {
+				$scope.signatureName = data.Name;
+				$scope.signature = "data:image/png;base64," + data.Signature;
+				$scope.checkSignature();
+			};
+
 			$scope.createTimesheet = function (param, submit) {
+				
+
 				if (!$scope.checkDataEntry(param)) {
 					return;
 				};
@@ -1348,10 +1386,10 @@
 					return;
 				};		
 			
-				if ($scope.user.Code == undefined){
-					$scope.msgOnError("Timesheet", 'Please set Employee parameters in console');
-					return;
-				};
+				// if ($scope.user.Code == undefined){
+				// 	$scope.msgOnError("Timesheet", 'Please set Employee parameters in console');
+				// 	return;
+				// };
 				if ($scope.showEmail&&$scope.signature == "" && $scope.supervisorEmail=="" && submit == true) {
 					$scope.msgOnError("Signature", 'Supervisor Signature or email is required!');
 					return;
@@ -1367,20 +1405,33 @@
 				catch (err){
 
 				};
+				if ((param == 'Daily') && ($scope.time.startTime == $scope.time.endTime)){
+					$scope.msgOnError('Timesheet', 'No daily time entered.');
+					return;
+				};
+				if ((param == 'Daily') && ($scope.TravelDataDaily.travelHr == "" || $scope.TravelDataDaily.travelHr == undefined)){
+					$scope.msgOnError('Travel Hours is required', 'Please enter the travel hours');
+					return;
+				};
+				
 
 				try {
-					if (param == 'Weekly'){
-						if (submit == false) {
-							LineItem.selectedUserNameList = $scope.selectedUserNameList;
-							LineItem.selectedUserList = $scope.selectedUserList;
-                    	};
-						
-					};
 					if(param == 'Daily'){
 						if (submit == false) {
 							LineItem.selectedUserNameList = $scope.selectedUserNameList;
 							LineItem.selectedUserList = $scope.selectedUserList;
                     	};
+						if($scope.travel){
+
+						};
+					};
+					if (param == 'Weekly'){
+						if (submit == false) {
+							LineItem.selectedUserNameList = $scope.selectedUserNameList;
+							LineItem.selectedUserList = $scope.selectedUserList;
+                    	};
+						if($scope.travel){
+						};
 					};
 				}
 				catch (err){
@@ -1399,6 +1450,53 @@
 
 				};*/
 
+				try {					
+					if(!$scope.travel){
+						if((param == 'Weekly') && ($scope.hoursperday[14].Hours == 0 || $scope.hoursperday[14].Hours == "0:00")){
+							$scope.msgOnError('Timesheet', 'No daily time entered.');
+							return;
+						}
+					}
+				}
+				catch (err){
+
+				};
+
+
+
+				$scope.postTimesheetEntry ={};
+				var newNotes ="";
+				var genDataNewNotes ="";
+				if($scope.MakeModel!=""){
+					var mm = angular.copy($scope.MakeModel);
+					var rf = angular.copy($scope.RegoFleet);					
+					var sv = angular.copy($scope.SerialVIN);
+					var kh = angular.copy($scope.KMHrS);
+					if(mm.includes("\r\n")){						
+						mm=mm.replace("\r\n","");
+					};
+					if(rf.includes("\r\n")){				
+						rf=rf.replace("\r\n","");
+					};
+					if(sv.includes("\r\n")){
+						sv=sv.replace("\r\n","");
+					};
+					if(kh.includes("\r\n")){
+						kh=kh.replace("\r\n","");
+					};
+					
+					newNotes = "Make/Model:"+ mm+
+						"%5Cr%5CnRego/Fleet:"+rf +
+						"%5Cr%5CnSerial/VIN:"+sv +
+						"%5Cr%5CnKms/Hours:"+kh + 
+						"%5Cr%5Cn"+ $scope.NotesLeft;
+					genDataNewNotes = "Make/Model:"+ mm+
+						"%5Cr%5CnRego/Fleet:"+rf +
+						"%5Cr%5CnSerial/VIN:"+sv +
+						"%5Cr%5CnKms/Hours:"+kh + 
+						"  "+ $scope.NotesLeft;	
+				};
+				
 				var dat = new Date();
 				if (param === 'Weekly') {
 					$scope.lockWeekly = true;			
@@ -1414,7 +1512,7 @@
 
 				var newTimeEntry = {};
 				var timeNow=new Date().getTime();
-				$scope.uniqueTimesheetno = $scope.user.Code + "-" + timeNow;
+				// $scope.uniqueTimesheetno = $scope.user.Code + "-" + timeNow;
 				newTimeEntry.PDFNo= $scope.uniqueTimesheetno;
 				newTimeEntry.TYPE = param;
 				/*newTimeEntry.STATE = 'new';*/
@@ -1488,8 +1586,8 @@
 						if($scope.toknUser.name == "Universal")
 							LineItem.USER =$scope.selectedEmployee.obj.userID;
 						else
-							LineItem.USER =$scope.toknUser.userID;
-						LineItem.EmployeeCode = $scope.user.Code;
+						LineItem.USER =$scope.toknUser.userID;
+						// LineItem.EmployeeCode = $scope.user.Code;
 						LineItem.EmployeeName = $scope.user.UsualName;
 						if($scope.toknUser.name=='Universal' && $scope.selectedEmployee.name !="" && state == "Saved")
 						{
@@ -1504,8 +1602,9 @@
 						LineItem.Job = $scope.jobcode;
 						LineItem.PayGroup = $scope.PayGroup;
 						LineItem.JobFullName = $scope.jobname;
+						LineItem.JobDesc = $scope.jobDesc;
 						// LineItem.ActivityCode =  $scope.selectedUser.Code;
-						// LineItem.HRTransTypePay =  $scope.selectedUser.Code;
+						LineItem.HRTransTypePay =  $scope.selectedUser.Code;
 						// LineItem.ActivityFullName = $scope.selectedSite.FullName;
 						LineItem.SiteFullName = $scope.selectedSite.FullName;
 						LineItem.WorkCentre =$scope.defaultWCCode;
@@ -1538,7 +1637,7 @@
 
 						LineItem.Level2="Pending";				
 						
-						/*LineItem.WorkCentre = $scope.selectedUser.DefaultWorkCentre;*/
+						/*LineItem.WorkCentre = $scope.selectedActivity.DefaultWorkCentre;*/
 
 						LineItem.StartTime = $scope.time.startTime.toTimeString().split(' ')[0];
 						LineItem.FinishTime = $scope.time.endTime.toTimeString().split(' ')[0];
@@ -1652,7 +1751,7 @@
 								newLineItem.USER =$scope.selectedEmployee.obj.userID;
 							else
 								newLineItem.USER =$scope.toknUser.userID;
-							newLineItem.EmployeeCode = $scope.user.Code;
+							// newLineItem.EmployeeCode = $scope.user.Code;
 							newLineItem.EmployeeName = $scope.user.UsualName;
 							if($scope.toknUser.name=='Universal' && $scope.selectedEmployee.name !="" && state == "Saved"){
 								newLineItem.selectedEmployee = {};
@@ -1667,9 +1766,8 @@
 							newLineItem.Job = $scope.jobcode;
 							newLineItem.JobFullName = $scope.jobname;
 							newLineItem.PayGroup = $scope.PayGroup;
-							// newLineItem.MainActivityCode =  $scope.selectedUser.Code;
-							// newLineItem.MainActivityFullName = $scope.selectedUser.FullName;
-							newLineItem.MainSiteFullName = $scope.selectedSite.FullName;
+							newLineItem.MainActivityCode =  $scope.selectedActivity.Code;
+							newLineItem.MainActivityFullName = $scope.selectedActivity.FullName;
 							newLineItem.ActivityFullName = $scope.newLineItems[m].ActivityFullName;
 							newLineItem.Travel = $scope.travel;
 							if (submit == false) {
@@ -1736,7 +1834,7 @@
 							else
 								LineItem.USER =$scope.toknUser.userID;
 							
-							LineItem.EmployeeCode = $scope.user.Code;
+							// LineItem.EmployeeCode = $scope.user.Code;
 							LineItem.EmployeeName = $scope.user.UsualName;
 							if($scope.toknUser.name=='Universal' && $scope.selectedEmployee.name !="" && state == "Saved")
 							{
@@ -1750,8 +1848,9 @@
 							LineItem.TAG = newTimeEntry.TAG;
 							LineItem.Job = $scope.jobcode;
 							LineItem.JobFullName = $scope.jobname;
+							LineItem.JobDesc = $scope.jobDesc;
 							// LineItem.ActivityCode =  $scope.selectedUser.Code;
-							// LineItem.HRTransTypePay =  $scope.selectedUser.Code;
+							LineItem.HRTransTypePay =  $scope.selectedUser.Code;
 							// LineItem.ActivityFullName = $scope.selectedUser.FullName;
 							LineItem.SiteFullName = $scope.selectedSite.FullName;
 							LineItem.PayGroup = $scope.PayGroup;
@@ -3223,6 +3322,7 @@
 									try{
 										$scope.jobname = $scope.timesheets[i].LineItems[j].JobFullName;
 										$scope.jobcode =$scope.timesheets[i].LineItems[j].Job;
+										$scope.jobDesc = $scope.timesheets[i].LineItems[j].JobDesc;
 										$scope.selectedJobObj = $scope.timesheets[i].LineItems[j].JobObj;
 										$scope.defaultWCCode = $scope.timesheets[i].LineItems[j].WorkCentre;
 										$scope.defaultWC = $scope.timesheets[i].LineItems[j].WorkCentreWithDisc;
@@ -3285,6 +3385,7 @@
 										$scope.travel = $scope.timesheets[i].LineItems[j].Travel;
 										$scope.travelHr = $scope.timesheets[i].LineItems[j].TravelTime;
 										$scope.jobname = $scope.timesheets[i].LineItems[j].JobFullName;
+										$scope.jobDesc = $scope.timesheets[i].LineItems[j].JobDesc;
 										$scope.jobcode =$scope.timesheets[i].LineItems[j].Job;
 										$scope.selectedJobObj = $scope.timesheets[i].LineItems[j].JobObj;
 										if($scope.connectionStatus == 'TRUE'){
@@ -3391,6 +3492,7 @@
 									$scope.DailyUlb = $scope.timesheets[i].LineItems[j].DailyUlb;
 									$scope.travel = $scope.timesheets[i].LineItems[j].Travel;
 									$scope.jobname = $scope.timesheets[i].LineItems[j].JobFullName;
+									$scope.jobDesc = $scope.timesheets[i].LineItems[j].JobDesc;
 									$scope.jobcode =$scope.timesheets[i].LineItems[j].Job;
 									$scope.selectedJobObj = $scope.timesheets[i].LineItems[j].JobObj;
 									if(countTS <= 1 && $scope.connectionStatus == 'TRUE'){
@@ -3533,7 +3635,7 @@
 
 						if ($scope.Activities[x] !== undefined) {
 							if ($scope.Activities[x].Code === $scope.lineItem.ActivityCode) {
-								$scope.selectedSite = $scope.Activities[x];
+								$scope.selectedActivity = $scope.Activities[x];
 								break;
 							};
 						};
@@ -3659,7 +3761,7 @@
 					if($scope.connectionStatus == 'TRUE'){
 						$scope.WCS = [];
 						$scope.defaultWC="";
-						$scope.selectedSite= {};
+						$scope.selectedActivity= {};
 						$scope.Activities= []
 					
 						$scope.MakeModel="";
@@ -3735,28 +3837,28 @@
 				};
 
 			};
-			$scope.setSelectedSite = function (ActivityItem){
+			$scope.setSelectedActivity = function (ActivityItem){
 				if(ActivityItem===undefined || ActivityItem===''){
-					$scope.selectedSite = {};
+					$scope.selectedActivity = {};
 				}else{
-					$scope.selectedSite = ActivityItem;
-					$scope.selectedSite.FullName = ActivityItem.Title;
-					// if($scope.connectionStatus == 'TRUE'){
-					// 	if(ActivityItem.DefaultWorkCentre != $scope.defaultWCCode){
-					// 		$scope.currentStatus = "Loading default workcentre of AC";
-					// 		$scope.loadingWC= true;
-					// 		$scope.getDefualtWCBasedOnselectedUser(ActivityItem.DefaultWorkCentre);
-					// 	}
-					// }
-					// else if($scope.connectionStatus == 'FALSE'){
-					// 	$scope.msgOnErrorConn("Your Offline","Please connect to Online");
-					// }
+					$scope.selectedActivity = ActivityItem;
+					$scope.selectedActivity.FullName = ActivityItem.Code+" - "+ActivityItem.Description;
+					if($scope.connectionStatus == 'TRUE'){
+						if(ActivityItem.DefaultWorkCentre != $scope.defaultWCCode){
+							$scope.currentStatus = "Loading default workcentre of AC";
+							$scope.loadingWC= true;
+							$scope.getDefualtWCBasedOnSelectedActivity(ActivityItem.DefaultWorkCentre);
+						}
+					}
+					else if($scope.connectionStatus == 'FALSE'){
+						$scope.msgOnErrorConn("Your Offline","Please connect to Online");
+					}
 				};
 
 			};
 			$scope.setSelectedDisActivity = function (ActivityItem, index){
 				if(ActivityItem===undefined || ActivityItem===''){
-					$scope.selectedSite = {};
+					$scope.selectedActivity = {};
 				}else{
 					$scope.newLineItems[index].ActivityCode = ActivityItem.Value1;
 					/*$scope.newLineItems[index].Quantity = 1;*/
@@ -3806,42 +3908,6 @@
 							
 				};
 			};*/
-			$scope.setdefaultWC = function (param){
-				if(param===undefined || param===''){
-					$scope.defaultWC='';
-					$scope.selectedWCActivityGrp='';
-				}else{
-					if($scope.connectionStatus=='TRUE'){
-						$scope.defaultWC = param.WorkCentre + " - "+ (param.AlternateDescription === undefined ? param.Description : param.AlternateDescription); /*param.WorkCentre;*/
-						$scope.defaultWCCode =param.WorkCentre;
-						$scope.selectedWCActivityGrp=param.ActivityGroup;
-						/*$scope.selectedUser= {};
-						$scope.Activities= [];
-						$scope.loadingAC = true;
-						$scope.currentStatus = "Fetching Activity Codes";
-						
-						$scope.setJobandUserActivities($scope.jobACList);
-						$scope.loadingAC = false;
-						$scope.currentStatus = "";
-						if($scope.empActivityCode){
-							$scope.Activities.every(item =>{
-								if(item.Code == $scope.empActivityCode){
-									$scope.selectedUser = item;
-									$scope.selectedUser.FullName = item.Code+" - "+item.Description;
-									$scope.setSelectedSite(item);
-									return false;
-								}
-								else return true;
-							});
-						};*/
-						
-					};
-					if($scope.connectionStatus=='FALSE'){
-						$scope.msgOnErrorConn("Your Offline",'Please connect to Online');
-					};
-				};
-
-			};
 			$scope.resetWCAndActivity = function (){
 				if($scope.testdata===true ){
 					return;
@@ -3851,11 +3917,15 @@
               	$scope.defaultWC="";
               	$scope.WCS = [];
               	$scope.Activities= []
-				$scope.selectedSite= {};
+				$scope.selectedActivity= {};
 			};
 			$scope.resetActivity = function () {
-				$scope.selectedSite = {};
+				$scope.selectedActivity = {};
 				
+			};
+
+			$scope.resetSite = function () {
+				$scope.selectedSite = {};
 			};
 
 			$scope.resetWorkCentre = function () {
@@ -3863,173 +3933,6 @@
 			};
 
 
-			$scope.getJobDetails = function () {
-				try{
-
-					if($scope.jobcode===undefined || $scope.jobcode===""){
-						$scope.msgOnError('Timesheet', 'Please enter job code to get work centre and activity lists!');
-						return;
-					};
-
-					if($scope.user.ActivityGroup===undefined || $scope.user.ActivityGroup===""){
-						$scope.msgOnError('Timesheet', 'Please check with Greentree Admin as you have no activity group assigned!');
-						return;
-					};
-
-					if($scope.testdata===true){
-						$scope.jobWCPlan="Engineering Survey  - Schedule of Rates";
-						$scope.workcentreList=WCPLAN;
-						return;
-					};
-					// $scope.msgInfo("WorkCentrePlan","Fetching Work Centre Plan detail");
-					$scope.currentStatus = "Fetching Work Centre Plan detail";
-					var link = {};
-					link.Instr = "DataFetch";
-					link.App = $scope.appName;
-					link.Object = "Demo-01-getJCJob";
-					link.Seq = "1";
-					link.FunctionOnReturn = "getWorkCentrePlan";
-					link.URLAdd = "/"+ $scope.jobcode;
-					link.InsertOnReturn = "Y";
-					link = "MiTokn" + JSON.stringify(link);
-                  	/*$scope.debugMode = link;
-					window.location = link;*/
-					link = encodeURI(link);
-
-					var _frameRefresh = document.createElement('iframe');
-					_frameRefresh.width = 0; _frameRefresh.height = 0; _frameRefresh.frameBorder = 0;
-					document.body.appendChild(_frameRefresh);
-					if (window.location.protocol == "ms-local-stream:" || window.location.protocol == "ms-appx-web:") {
-						window.HtmlCommunicator.getDataFromHTML(link);
-					} else {
-						_frameRefresh.src = link;
-					};
-
-					setTimeout(function () { document.body.removeChild(_frameRefresh); }, 5000);
-
-					console.log("getting job=>"+link);
-					
-				}catch(err){
-					$scope.log("getJobDetails:"+err.message);
-				};
-
-			};
-
-			$scope.getJobDetailsFromCRMServiceRequest = function () {
-				try{
-					if($scope.jobcode===undefined || $scope.jobcode===""){
-						$scope.msgOnError('Timesheet', 'Please enter job code to get work centre and activity lists!');
-						return;
-					};
-					var link = {};
-					link.Instr = "DataFetch";
-					link.App = $scope.appName;
-					link.Object = "Demo-01-getJCJob";
-					link.Seq = "1";
-					link.FunctionOnReturn = "getJobDetailsFromCRMSR";
-					link.URLAdd = "/"+ $scope.jobcode;
-					link.InsertOnReturn = "Y";
-					link = "MiTokn" + JSON.stringify(link);
-					link = encodeURI(link);
-
-					var _frameRefresh = document.createElement('iframe');
-					_frameRefresh.width = 0; _frameRefresh.height = 0; _frameRefresh.frameBorder = 0;
-					document.body.appendChild(_frameRefresh);
-					if (window.location.protocol == "ms-local-stream:" || window.location.protocol == "ms-appx-web:") {
-						window.HtmlCommunicator.getDataFromHTML(link);
-					} else {
-						_frameRefresh.src = link;
-					};
-					setTimeout(function () { document.body.removeChild(_frameRefresh); }, 5000);
-					console.log("getting getJobDetailsFromCRMServiceRequest=>"+link);
-				}catch(err){
-					$scope.log("getJobDetailsFromCRMServiceRequest:"+err.message);
-				};
-			};
-
-			$scope.getWCDetails = function () {
-				try{
-					if(($scope.user.DefaultActivity===undefined || $scope.user.DefaultActivity==="") && $scope.UserDefaultWorkCentre.length === 0){
-						$scope.msgOnError('Timesheet', 'Please check with Greentree Admin as Employee has no DefaultActivity assigned!');
-						return;
-					};
-
-					// $scope.WCFetchList = [];
-
-					var link = {};
-					link.Instr = "DataFetch";
-					link.App = $scope.appName;
-					link.Object = "Demo-01-getWorkCentre";
-					link.Seq = "1";
-					link.FunctionOnReturn = "setDefualtWC";
-					link.URLAdd = "/"+ $scope.UserDefaultWorkCentre[0].replace(/\s/g,'%20');
-					link.InsertOnReturn = "Y";
-					link = "MiTokn" + JSON.stringify(link);
-
-					link = encodeURI(link);
-
-					var _frameLocalfetch = document.createElement('iframe');
-					_frameLocalfetch.width = 0; _frameLocalfetch.height = 0; _frameLocalfetch.frameBorder = 0;
-					document.body.appendChild(_frameLocalfetch);
-
-					try {
-						if (window.location.protocol == "ms-local-stream:" || window.location.protocol == "ms-appx-web:") {
-							window.HtmlCommunicator.getDataFromHTML(link);
-						} else {
-							_frameLocalfetch.src = link;
-						};
-					}
-					catch (err) {
-						$scope.log("windows changes for sync " + err.message());
-					};
-					setTimeout(function () { document.body.removeChild(_frameLocalfetch); }, 5000);
-
-						/*window.location = link;*/
-					console.log("getting getWCDetails=>"+link);
-				}
-				catch(err){
-					$scope.log("getWCDetails:"+err.message);
-				};
-			};
-			
-			$scope.getDefualtWCBasedOnselectedUser = function (defaultWorkCentre) {
-				try{
-					console.log('getDefualtWCBasedOnselectedUser ',defaultWorkCentre);
-					var link = {};
-					link.Instr = "DataFetch";
-					link.App = $scope.appName;
-					link.Object = "Demo-01-getWorkCentre";
-					link.Seq = "1";
-					link.FunctionOnReturn = "setDefualtWCBasedOnselectedUser";
-					link.URLAdd = "/"+ defaultWorkCentre.replace(/\s/g,'%20');
-					link.InsertOnReturn = "Y";
-					link = "MiTokn" + JSON.stringify(link);
-
-					link = encodeURI(link);
-
-					var _frameLocalfetch = document.createElement('iframe');
-					_frameLocalfetch.width = 0; _frameLocalfetch.height = 0; _frameLocalfetch.frameBorder = 0;
-					document.body.appendChild(_frameLocalfetch);
-
-					try {
-						if (window.location.protocol == "ms-local-stream:" || window.location.protocol == "ms-appx-web:") {
-							window.HtmlCommunicator.getDataFromHTML(link);
-						} else {
-							_frameLocalfetch.src = link;
-						};
-					}
-					catch (err) {
-						$scope.log("windows changes for sync " + err.message());
-					};
-					setTimeout(function () { document.body.removeChild(_frameLocalfetch); }, 5000);
-
-						/*window.location = link;*/
-					console.log("getting getDefualtWCBasedOnselectedUser=>"+link);
-				}
-				catch(err){
-					$scope.log("getDefualtWCBasedOnselectedUser:"+err.message);
-				};
-			};
 			
 			$scope.sleep = function(ms){
 				/* wait for ms */
@@ -4123,23 +4026,26 @@
 				$scope.defaultWCCode = "";
 				$scope.defaultWC = "";
 				$scope.jobWCPlan = "";
-				$scope.resetActivity();
+				$scope.resetSite();
 				$scope.jobname = "";
 				$scope.time = {};
 				$scope.standardText = "";
 				$scope.SearchJobText = "";
 				$scope.SearchWCText = "";
 				$scope.activityFilter = "";
+				$scope.TravelDataDaily = {travelHr:"",standBy:"",delay:""}
 
 			};
 
 
 			$scope.popupWindow = function (param) {
-				$scope.showEmail =false;
+				$scope.showEmail =true;
 				$scope.lockDaily =true;
 				$scope.lockWeekly =true;
 				$scope.typeOfTimeSheet = param;
-				for(let i=0; i<$scope.AllUserList.length; i++){$scope.AllUserList[i].check = false};
+				for(let i=0; i<$scope.AllUserList.length; i++){
+					$scope.AllUserList[i].check = false
+				};
 				$scope.selectedUserNameList = [];
 				$scope.selectedUserList = [];
 
@@ -4170,7 +4076,7 @@
 				$scope.StandardText = "";
 				$scope.selectedJob = {};
 				$scope.editTAG = "None";
-				/*$scope.selectedUser = {};*/
+				/*$scope.selectedActivity = {};*/
 				$scope.selectedWorkcentre = {};
 				$scope.time = {};
 				$scope.time.hoursWorked = "0.00";
@@ -4273,6 +4179,15 @@
 
 			};
 
+			$scope.setSelectedSite = function (siteItem){
+				if(siteItem===undefined || siteItem===''){
+					$scope.selectedSite = {};
+				}else{
+					$scope.selectedSite = siteItem;
+					$scope.selectedSite.FullName = siteItem.Title;
+				};
+			};
+
 			$scope.dayEntryHoursClean = function(hours){
 				var _components = hours.split(":");
 				try {
@@ -4332,6 +4247,10 @@
 							$scope.adjustDayTime();
 							return;
 						};
+						if($scope.dayEntry.travelHr == '' || $scope.dayEntry.travelHr == undefined){
+							$scope.msgOnError("Travel Hours is Required", "Please enter the travel hours");
+							return;
+						}
 
 						if($scope.dayEntry.Hours != "0.00"  ||$scope.dayEntry.Hours !=0 ){
 							$scope.dayEntry.Hours = $scope.dayEntryHoursClean($scope.dayEntry.Hours);
@@ -4348,6 +4267,8 @@
 						$scope.dayEntry.startTime = $scope.hoursperday[index].startTime;
 						$scope.dayEntry.endTime = $scope.hoursperday[index].endTime;
 						$scope.dayEntry.travelHr =$scope.hoursperday[index].travelHr;
+						$scope.dayEntry.standBy =$scope.hoursperday[index].standBy;
+						$scope.dayEntry.delay =$scope.hoursperday[index].delay;
 
 						if ($scope.dayEntry.startTime == "") {
 							$scope.dayEntry.startTime = $scope.time.startTime;
@@ -6224,44 +6145,6 @@
 				};
 			};
 
-			$scope.getPlantJobDefaultActivity = function (PlantActivityCode) {
-				try{    
-						if($scope.PlantActivityCode===""){
-							$scope.msgOnError('Timesheet', 'Please check on Greentree as you are not assigned default plant activity code!');
-							return;
-						};
-
-						var link = {};
-						link.Instr = "DataFetch";
-						link.App = $scope.appName;
-						link.Screen = $scope.screenName;
-						link.Object = "Demo-01-JCActivity";
-						link.Seq = "1";
-						link.FunctionOnReturn = "setPlantJobDefaultActivityCode";
-						link.URLAdd = "/"+PlantActivityCode;
-						link.InsertOnReturn = "Y";
-						link = "MiTokn" + JSON.stringify(link);
-                        
-						var _frameAC= document.createElement('iframe');
-						_frameAC.width = 0; _frameAC.height = 0; _frameAC.frameBorder = 0;
-						document.body.appendChild(_frameAC);
-						try {
-							if (window.location.protocol == "ms-local-stream:" || window.location.protocol == "ms-appx-web:") {
-									window.HtmlCommunicator.getDataFromHTML(link); 
-							}else{
-								_frameAC.src = link;
-							};
-						}
-						catch (err){
-							$scope.log("windows changes for sync " + err.message());
-						};
-
-						setTimeout(function () { document.body.removeChild(_frameAC); }, 5000);
-				}catch(err){
-					$scope.log("getUserDefaultWorkCentre:"+err.message);
-				};
-			};
-          
 			if ($scope.testdata == true) {
 				data = [];
 				$scope.setTimeSheets(data);
@@ -6574,39 +6457,6 @@
 				
 			};
 
-			$scope.getAllJCJobs = function () {
-				try{
-						
-
-					var link = {};
-					link.Instr = "DataFetch";
-					link.App = $scope.appName;
-					link.Screen = $scope.screenName;
-					link.Object = "Demo-01-getAllJCJob";
-					link.Seq = "1";
-					link.FunctionOnReturn = "injectAllJobs";
-					link.InsertOnReturn = "Y";
-					link = "MiTokn" + JSON.stringify(link);
-					var _frameAC= document.createElement('iframe');
-					_frameAC.width = 0; _frameAC.height = 0; _frameAC.frameBorder = 0;
-					document.body.appendChild(_frameAC);
-					try {
-						if (window.location.protocol == "ms-local-stream:" || window.location.protocol == "ms-appx-web:") {
-								window.HtmlCommunicator.getDataFromHTML(link); 
-						}else{
-							_frameAC.src = link;
-						};
-					}
-					catch (err){
-						$scope.log("windows changes for sync " + err.message());
-					};
-
-					setTimeout(function () { document.body.removeChild(_frameAC); }, 5000);
-				}catch(err){
-					$scope.log("getAllJCJobs:"+err.message);
-				};
-			};
-
 			$scope.updateUserNameList = function(){   
                 $scope.selectedUserNameList=[];
                 for(var m =0 ; m< $scope.selectedUserList.length; m++){
@@ -6823,24 +6673,7 @@
 				console.log("injectTimesheetError:" + err.message);
 			};
 		};
-		function injectActivity(data) {
-			console.log("JCActivityCodes ",data);
-			try {
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {					
-					if(initscope.allActivityCodesList.length === 0){
-						initscope.allActivityCodesList = data[0].JCActivityCodes;
-						initscope.saveLocally_Jobs_WCs_ACs(data[0].JCActivityCodes,"JCActivityCodes");
-					}
-				});
-			}
-			catch (err) {
 
-			};
-		};
 		function injectFailedSync(data) {
 
 		try {
@@ -6859,252 +6692,7 @@
 
 		};
 
-		function injectAllJobs(data) {
-			console.log("JobList Data ",data);
-			try {
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-					// initscope.allJobList =[];
-					if(initscope.allJobList.length == 0 ){
-						initscope.allJobList = data;
-						initscope.currentStatus = "";
-						initscope.loadingJob = false;
-						initscope.saveLocally_Jobs_WCs_ACs(initscope.allJobList,'JCJobs');
-						console.log("All open JCJobs data ",initscope.allJobList);
-					}
-					
-				});
-			}
-			catch (err) {
-				console.log(" error at injectAllJobs function ",err);
-			};
-		};
 
-		function injectCRMServiceRequests(data){
-			try{
-				console.log("injectCRMServiceRequests ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-					initscope.CRMServiceRequests = data;
-					initscope.allJobList = [];
-					duplicateJobsInServiceRequests = {};
-					if((initscope.CRMServiceRequests || initscope.CRMServiceRequests.length >= 1) && initscope.allJobList.length == 0 ){
-						initscope.ServiceRequests = initscope.CRMServiceRequests[0].ServiceRequests;
-						for(var a=0;a<initscope.CRMServiceRequests[0].ServiceRequests.length;a++){
-							if(duplicateJobsInServiceRequests[initscope.CRMServiceRequests[0].ServiceRequests[a].Job.Code]===undefined){
-								duplicateJobsInServiceRequests[initscope.CRMServiceRequests[0].ServiceRequests[a].Job.Code] = true;
-								initscope.allJobList.push(initscope.CRMServiceRequests[0].ServiceRequests[a]);
-							}
-						};
-						console.log("allJobList ",initscope.allJobList);
-					}
-					
-				});
-			}
-			catch(err){
-				console.log("error occured at injectCRMServiceRequests function ",err);
-			};
-			
-		};
-
-		function injectWC(data) {
-			console.log("JCWorkCentres ",data);
-			try {
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-					if(initscope.allWorkCentreList.length === 0){
-						initscope.allWorkCentreList = data[0].JCWorkCentres;
-						initscope.saveLocally_Jobs_WCs_ACs(data[0].JCWorkCentres,"JCWorkCentres");
-					}
-				});
-			}
-			catch (err) {
-
-			};
-		};
-
-		function getWorkCentrePlan(data) {
-
-			try {
-				console.log("In getWorkCentrePlan ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-              	initscope.$apply(function () {
-					if(data!==undefined &&  data[0]!==undefined){
-						initscope.jobWCPlan=data[0].WorkCentrePlan;
-						if(initscope.jobWCPlan !== undefined){
-							initscope.currentStatus = "Fetching Work Centres for the Plan";
-							initscope.getWCPlanDetails();
-						}
-						else{
-							if(initscope.empActivityCode !=="" && initscope.empActivityCode !== undefined){
-								initscope.currentStatus = "Fetching Default Work Centre";
-								initscope.getWCDetails();
-								initscope.getActivityCodesForJob();
-								// initscope.getACListByJob(initscope.selectedJobACGroup);
-							}
-							else{
-								$scope.msgOnError('Timesheet', 'Please check with Greentree Admin as Employee has no default Activity Code assigned!');
-							}
-						}
-						
-					}else{
-						initscope.msgOnError('Timesheet', 'Please check the Job Code!');
-					};
-
-				});
-			}
-			catch (err) {
-
-			};
-		};
-
-		function getJobDetailsFromCRMSR(data) {
-
-			try {
-				console.log("In getJobDetailsFromCRMSR ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$applyAsync(function () {
-					if(data!==undefined && data[0]){
-						initscope.selectedJobObj = data[0];
-						initscope.selectedJobACGroup = data[0].ActivityGroup;
-						initscope.getActivityCodesForJob();
-						initscope.selectedUser= {};
-						initscope.Activities= [];
-						initscope.loadingAC = true;
-						initscope.currentStatus = "Fetching Activity Codes";
-						initscope.selectedJobObj.UserDefinedFields.every(item => {
-							if(item.Name == 'TOKN Overheads' && item.Value == 'true'){
-								initscope.nonBillableJob = true;
-								return false;
-							}
-							else return true;
-						});
-						
-					};
-				});
-			}
-			catch (err) {
-				console.log("error occured in getJobDetailsFromCRMSR function ",err);
-			};
-		};
-
-
-		function setDefualtWC(data) {
-			console.log("data in setDefualtWC=>",data);
-			try {
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-					if(data && data[0].JCWorkCentre){
-						let defaultWorkCentre = data[0].JCWorkCentre;
-						defaultWorkCentre.WorkCentre = defaultWorkCentre.Code
-						defaultWorkCentre.AlternateDescription = defaultWorkCentre.Description;
-						initscope.defaultWorkCentre = defaultWorkCentre;
-						initscope.currentStatus = "";
-						initscope.loadingWC= false;
-						// initscope.setWC([defaultWorkCentre]);
-						// initscope.currentStatus = "";
-						// initscope.loadingWC= false;
-						// initscope.defaultWC = defaultWorkCentre.WorkCentre + " - "+ (defaultWorkCentre.AlternateDescription === undefined ? defaultWorkCentre.Description : defaultWorkCentre.AlternateDescription);
-						// initscope.defaultWCCode =defaultWorkCentre.WorkCentre;
-						// initscope.setdefaultWC(initscope.defaultWorkCentre);
-					};
-
-
-				});
-				console.log("WCS data ===>",initscope.WCS);
-			}
-			catch (err) {
-
-			};
-		};
-
-		function setDefualtWCBasedOnselectedUser(data) {
-			console.log("data in setDefualtWCBasedOnselectedUser=>",data);
-			try {
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-
-					let defaultWorkCentre = data[0].JCWorkCentre;
-					defaultWorkCentre.WorkCentre = defaultWorkCentre.Code;
-					defaultWorkCentre.AlternateDescription = defaultWorkCentre.Description;
-
-					initscope.defaultWC = defaultWorkCentre.WorkCentre + " - "+ (defaultWorkCentre.AlternateDescription === undefined ? defaultWorkCentre.Description : defaultWorkCentre.AlternateDescription);
-					initscope.defaultWCCode = defaultWorkCentre.WorkCentre;
-
-					var WCExist = false;
-					initscope.WCS.every(item =>{
-						if(item.WorkCentre == defaultWorkCentre.Code){
-							WCExist = true;
-							return false;
-						}
-						else{
-							return true;
-						}
-					});
-					if(!WCExist){
-						initscope.WCS.push(defaultWorkCentre);
-					}
-					initscope.currentStatus = "";
-					initscope.loadingWC= false;
-
-				});
-				console.log("WCS data ===>",initscope.WCS);
-			}
-			catch (err) {
-
-			};
-		};
-
-		function setWCdescription(data) {
-			console.log("data in setWCdescription=>",data);
-			try {
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-					var newDataLength = initscope.newData.length;
-					for(var j=0; j<initscope.WCS.length;j++){
-						if(data[0].JCWorkCentre.Description!==undefined && data[0].JCWorkCentre.Code===initscope.WCS[j].WorkCentre){
-							initscope.WCS[j].Description=data[0].JCWorkCentre.Description;
-							var newWorkcenterObject = {};
-							newWorkcenterObject.code = data[0].JCWorkCentre.Code;
-							newWorkcenterObject.description = initscope.WCS[j].Description;
-							initscope.newData[newDataLength] = newWorkcenterObject;
-							newDataLength = newDataLength+1;
-							break;
-						};
-					};
-				});
-			}
-			catch (err) {
-
-			};
-		};
 
 		function injectFailedMsg(data) {
 			try {
@@ -7143,6 +6731,23 @@
 			catch (err) {
 				
 			};
+		};
+
+		function GetSitesData(data){
+			try{
+				console.log("sites data ",data);
+				if (typeof data === 'string' || data instanceof String) {
+					var data = JSON.parse(data);
+				};
+				var initscope = angular.element(document.getElementById("APPID")).scope();
+				initscope.$apply(function () {
+					initscope.SitesList = JSON.parse(base64.decode(data[0].data)).listItem;
+					console.log("sites list data ",initscope.SitesList);
+				});
+			}
+			catch(err){
+				console.log("error occured at GetSitesData function ",err);
+			}
 		};
 
 		function setToknUserList(data) {
@@ -7185,216 +6790,6 @@
 			};
 		};
 		
-		function GetSitesData(data){
-			try{
-				console.log("sites data ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-					console.log(data,'sites encrypted data')
-					console.log(JSON.parse(base64.decode(data[0].data)),'sites decrypted data')
-					initscope.SitesList = JSON.parse(base64.decode(data[0].data)).listItem;
-				});
-			}
-			catch(err){
-				console.log("error occured at GetSitesData function ",err);
-			}
-		};
-
-		function setJobACGroup(data) {
-
-			try {
-				
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-					if(data!==undefined &&  data[0]!==undefined){
-						initscope.jobACGroup=data[0].ActivityGroup;
-						initscope.getACListByJob(initscope.jobACGroup);
-						/*initscope.activityGroup=data[0].ActivityGroup;
-						initscope.getActivityCodesForUserActivitygroup();*/
-					}else{
-						initscope.msgOnError('Timesheet', 'Please check the Job Code!');
-					};
-
-				});
-			}
-			catch (err) {
-
-			};
-		};
-		function setActivityGrp(data) {
-
-			try {
-				console.log("Data in setActivityGrp ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-					initscope.currentStatus = "";
-                  	initscope.loadingAC =false;
-					initscope.activitylist=data[0].JCActivityCodes;
-					initscope.setActivities(data[0].JCActivityCodes);
-                    //initscope.debugMode = data[0].JCActivityCodes;
-				});
-			}
-			catch (err) {
-
-			};
-		};
-
-
-		function setWCActivityGrp(data) {
-
-			try {
-				console.log("Data in setWCActivityGrp ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-					initscope.currentStatus = "";
-					initscope.loadingAC =false;
-					initscope.WCactivitylist=data[0].JCActivityCodes;
-					initscope.setWCandUserActivities(data[0].JCActivityCodes);
-				});
-			}
-			catch (err) {
-
-			};
-		};
-
-
-
-		function setUserActivityGrp(data) {
-
-			try {
-				console.log("Data in setUserActivityGrp ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				if(data && data[0].JCActivityCodes){
-					initscope.$apply(function () {
-						initscope.Useractivitylist=data[0].JCActivityCodes;
-						initscope.saveLocally_Jobs_WCs_ACs(initscope.Useractivitylist,"UserActivityCodes");
-					});
-				}
-			}
-			catch (err) {
-
-			};
-		};
-
-		function setUserDefaultWorkCentre(data) {
-
-			try {
-				console.log("Data in setUserDefaultWorkCentre ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				if(data && data[0].JCActivityCode){
-					initscope.$apply(function () {
-					initscope.UserDefaultWorkCentre=[data[0].JCActivityCode.DefaultWorkCentre];
-					initscope.getWCDetails();
-					initscope.saveLocally_Jobs_WCs_ACs(initscope.UserDefaultWorkCentre,"UserDefaultWorkCentre");
-				});
-				}
-			}
-			catch (err) {
-				console.log(" arror at setUserDefaultWorkCentre function ",err);
-			};
-		};
-
-		function setDisbursementActivities(data) {
-
-			try {
-				console.log("Data in setDisbursementActivities ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-					var disAC = [
-						{'Code':'FOOD', "Description": "Food Allowance"},
-						{"Code": "LSALLO", "Description": "Site Allowance"},
-						{"Code": "LSONCA", "Description": "On Call"}
-					];
-					if(data && data[0].JCActivityCodes){
-						initscope.ListManagersDisbursType=data[0].JCActivityCodes.filter(item=>{
-							for(let i=0;i<disAC.length;i++){
-								if(disAC[i].Code==item.Code){
-									return true;
-								}
-							};
-							return false;
-						});
-					}
-					else{
-						initscope.ListManagersDisbursType = disAC;
-					}
-				});
-			}
-			catch (err) {
-				console.log("setDisbursementActivities: "+err.message);
-			};
-		};
-
-		function setDisbursementData(data) {
-			try {
-				console.log("Data in setDisbursementActivities ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-					if(data){
-						initscope.ListManagersDisbursType = JSON.parse(base64.decode(data[0].data)).listItem;
-						console.log(" ListManagersDisbursType ", initscope.ListManagersDisbursType);
-					}
-				});
-			}
-			catch (err) {
-				console.log("setDisbursementData: "+err.message);
-			};
-		};
-
-		function setPlantJobDefaultActivityCode(data) {
-
-			try {
-				console.log("Data in setPlantJobDefaultActivityCode ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				initscope.$apply(function () {
-					if(data[0].JCActivityCode){
-						var PACExist = false;
-						initscope.PlantActivities.every(item =>{
-							if(item.Code == data[0].JCActivityCode.Code){
-								PACExist = true;
-								return false;
-							}
-							else{
-								return true;
-							}
-						});
-						if(!PACExist){
-							initscope.PlantActivities.push(data[0].JCActivityCode);
-						}
-					}
-				});
-			}
-			catch (err) {
-				console.log("setPlantJobDefaultActivityCode: "+err.message);
-			};
-		};
 
 		function setJobManager(data){
 			try{
@@ -7413,78 +6808,6 @@
 			}
 		};
 
-		function setJobACList(data) {
-
-			try {
-				console.log("setJobACList ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				if(data && data[0].JCActivityCodes!=undefined){
-					initscope.$apply(function () {
-						initscope.jobACList =[];
-						initscope.jobACList=data[0].JCActivityCodes;
-						initscope.setJobandUserActivities(initscope.jobACList);
-						initscope.loadingAC = false;
-						initscope.currentStatus = "";
-						if(initscope.empActivityCode){
-							if(initscope.defaultWorkCentre){
-								initscope.setWC([initscope.defaultWorkCentre]);
-								initscope.currentStatus = "";
-								initscope.loadingWC= false;
-								initscope.defaultWC = initscope.defaultWorkCentre.WorkCentre + " - "+ (initscope.defaultWorkCentre.AlternateDescription === undefined ? initscope.defaultWorkCentre.Description : initscope.defaultWorkCentre.AlternateDescription);
-								initscope.defaultWCCode =initscope.defaultWorkCentre.WorkCentre;
-								// initscope.setdefaultWC(initscope.defaultWorkCentre);
-							}
-							else if(initscope.empActivityCode){
-								initscope.getUserDefaultWorkCentre();
-							};
-							initscope.Activities.every(item =>{
-								if(item.Code == initscope.empActivityCode){
-									initscope.selectedSite = item;
-									initscope.selectedSite.FullName = item.Code+" - "+item.Description;
-									initscope.setSelectedSite(item);
-									return false;
-								}
-								else return true;
-							});
-						};
-					});
-				}
-			}
-			catch (err) {
-
-			};
-		};
-
-		function editJobACList(data) {
-
-			try {
-				console.log("editJobACList ",data);
-				if (typeof data === 'string' || data instanceof String) {
-					var data = JSON.parse(data);
-				};
-				var initscope = angular.element(document.getElementById("APPID")).scope();
-				if(data && data[0].JCActivityCodes!=undefined){
-					initscope.$apply(function () {
-						initscope.jobACList =[];
-						initscope.jobACList=data[0].JCActivityCodes;
-						initscope.loadingInit = false;
-						initscope.executeOnce = false;
-						initscope.setJobandUserActivities(initscope.jobACList);
-					});
-				}
-				else{
-					initscope.loadingInit = false;
-					initscope.Activities = initscope.Useractivitylist;
-				}
-			}
-			catch (err) {
-				initscope.loadingInit = false;
-				initscope.Activities = initscope.Useractivitylist;
-			};
-		};
 		function chkSyncResponse(data) {
 			if (typeof data === 'string' || data instanceof String) {
 				var data = JSON.parse(data);
@@ -7691,7 +7014,7 @@
 				var initscope = angular.element(document.getElementById("APPID")).scope();
 				initscope.$apply(function () {
 					
-					initscope.selectedUser.Code= data[0].Employee.DefaultActivity;
+					initscope.selectedActivity.Code= data[0].Employee.DefaultActivity;
 				});
 			}
 			catch (err) {
@@ -8035,6 +7358,17 @@
 			}
 			});
 		};
+
+		function signResponseCapture(data) {
+			if (typeof data === 'string' || data instanceof String) {
+				var data = JSON.parse(data);
+			}
+			var scope = angular.element(document.getElementById("APPID")).scope();
+			scope.$apply(function () {
+				scope.setSignatureCapture(data);
+			});
+		};
+
 		function setDisJobACList(data) {
 
 			try {
@@ -8349,12 +7683,39 @@
 						<h4>{{dayEntry.Date}} - {{dayEntry.Day}}</h4>
 					</div>
 				</div>
+				<!-- <input id="WeeklyTravelHr" type="number" inputmode="decimal"
+									ng-keydown="allowTwoDigitWeekly('WeeklyTravelHr',index.dayIndex)"
+									pattern="^\d*(\.\d{0,2})?$" class="form-control"
+									ng-model="perDayTravelHr[index.dayIndex]"> -->
 				<div class="weekly-content">
+
+					<div class="inputbox" ng-class="{ focus:dayEntry.travelHr !== '' ,lockdown: lockWeekly==true}" style="width:93%; margin-top: 20px;">
+						<div class="placeholder" ng-style="subHeading">*Travel Hours</div>
+						<i style="color:#777" class="fas fa-pencil-alt"></i>
+						<input type="number" class="input" ng-model="dayEntry.travelHr" inputmode="decimal" pattern="^\d*(\.\d{0,2})?$">
+					</div>
+					<div style="display: flex;justify-content: space-between;">
+						<div class="inputbox" style="width:45%;" ng-class="{ focus:dayEntry.standBy !== '' ,lockdown: lockWeekly==true}">
+							<div class="placeholder" ng-style="subHeading">Standby</div>
+							<i style="color:#777" class="fas fa-pencil-alt"></i>
+							<input type="number" class="input" ng-model="dayEntry.standBy" inputmode="decimal" pattern="^\d*(\.\d{0,2})?$">
+						</div>
+						<div class="inputbox" style="width:45%;" ng-class="{ focus:dayEntry.delay !== '' ,lockdown: lockWeekly==true}">
+							<div class="placeholder" ng-style="subHeading">Delay</div>
+							<i style="color:#777" class="fas fa-pencil-alt"></i>
+							<input type="number" class="input" ng-model="dayEntry.delay" inputmode="decimal" pattern="^\d*(\.\d{0,2})?$">
+						</div>
+					</div>
+					<!-- <div class="inputbox" ng-class="{ focus:jobname !== '' ,lockdown: lockDaily==true}" style="width:100%; margin: 0">
+						<div class="placeholder" ng-style="subHeading">*Enter Job Code</div>
+						<i style="color:#777" class="fas fa-pencil-alt"></i>
+						<input id="dailyJobCode" type="text" ng-model="jobname" class="input">
+					</div>		 -->
 
 					<div class="sub-popup-header" style="width: calc(100% - 20px);width: -moz-calc(100% - 20px);width: -webkit-calc(100% - 20px);margin: 0px 10px;" ng-style="lineBTM">
 						<h3 ng-style="subHeading" style=" font-size: 16px;">Enter work start and end time</h3>
 					</div>
-					<div class="input-capture-time">
+					<div class="input-capture-time" style="padding-bottom:70px">
 
 						<div class="inputfield content-50" style=" width: 50%; float: left; display: block;">
 							<div class="inputbox content-50 left" ng-class="{ focus: time.startTime !=='',lockdown: lockWeekly==true}">
@@ -8378,9 +7739,6 @@
 
 					</div>
 
-					<div class="weekly-hours">
-						<input class="input" style="padding: 0; font-size: 30px;" ng-model="dayEntry.Hours" disabled="">
-					</div>
 					<!-- <div ng-if="SplitTotalHoursInWeekly[index.dayIndex].TotalHoursSplit"class="weekly-hours" style="width: 100%;display: inline-flex;justify-content: space-between;">
 						<div style="display: flex;align-items: center;justify-content: space-between;flex-direction: column;">
 							<span style="font-size: 16px;font-weight: bold;">Standard</span>
@@ -8390,9 +7748,18 @@
 							<span style="font-size: 16px;font-weight: bold;">Supplementary</span>
 							<input style="font-size: 40px;padding: 0;" class="input" ng-model="SplitTotalHoursInWeekly[index.dayIndex].TotalSupplementaryHours" disabled="">
 						</div>
-					</div> -->
+					</div> -->	
+
+					<div class="weekly-hours">
+						<div>
+							<p style="margin:0;">Total Hours</p>
+							<input class="input" style="padding: 0; font-size: 30px;margin-bottom: 15px;" ng-model="dayEntry.Hours" disabled="">
+						</div>
+					</div>
 					
+
 				</div>
+
 				<button class="new" ng-click="windowHours(index.dayIndex, false)">Confirm</button>
 			</div>
 		</div>
@@ -8514,19 +7881,19 @@
 				</div> -->
               
 				<div class="inputbox" ng-class="{ focus:jobname !== '' ,lockdown: lockDaily==true}" style="width:100%; margin: 0">
-					<div class="placeholder" ng-style="subHeading">Enter Job Code</div>
+					<div class="placeholder" ng-style="subHeading">*Enter Job Code</div>
 					<i style="color:#777" class="fas fa-pencil-alt"></i>
 					<input id="dailyJobCode" type="text" ng-model="jobname" class="input">
 				</div>
 														
 
 				<!--User List Dropdown-->
-                <div class="dropdown" style="width:100%; margin-top: 4px;">
+                <div class="dropdown" style="width:100%; margin-top: 10px;">
                     <div class="selected" ng-class="{focus: selectedUserNameList.length!= 0,lockdown: lockDaily==true }">
                         <input type="text" class="input" ng-model="selectedUserNameList" name="act">
                         <div id="userListNewCodeEdit02" class="placeholder" onclick="dd_expand('#userListNewCodeEdit02')">
-                            <span ng-if="selectedUserNameList.length== 0 ">Select User</span>
-                            <span ng-if="selectedUserNameList.length!= 0">User</span>
+                            <span ng-if="selectedUserNameList.length== 0 ">*Select User</span>
+                            <span ng-if="selectedUserNameList.length!= 0">*User</span>
                         </div>
 
                         <i class="fas fa-caret-down"></i>
@@ -8552,16 +7919,11 @@
 				<div class="dropdown" style="width:100%">
 					<div class="selected" ng-class="{focus: selectedSite.FullName !== undefined,lockdown: lockDaily==true }">
 						<input type="text" class="input" disabled="" ng-model="selectedSite.FullName" name="act" ng-value="selectedSite.FullName">
-						
-						<!-- <div id="activityNewCodeEdit02" class="placeholder" > -->
 						<div id="activityNewCodeEdit02" class="placeholder" onclick="dd_expand('#activityNewCodeEdit02')">
-							<span ng-click="showErrorIfNotSelectedJob('#activityNewCodeEdit02')" ng-if="selectedSite.FullName  == undefined &amp;&amp; !loadingAC">Select Site</span>
-							<span ng-if="selectedSite.FullName !== undefined &amp;&amp; !loadingAC">Site</span>
+							<span ng-if="selectedSite.FullName  == undefined &amp;&amp; !loadingAC">*Select Site</span>
+							<span ng-if="selectedSite.FullName !== undefined &amp;&amp; !loadingAC">*Site</span>
 						</div>
 						<i class="drop-down-arrow"></i>
-						<!-- <div ng-show="loadingAC" class="icon-container">
-							<i style="margin: 0 -1px 0 0px;" class="fas fa-spinner fa-spin"></i>
-						</div> -->
 						<div ng-show="loadingAC" class="icon-container" style="inset: 0;width: 100%;height: 60px;position: absolute;left: 0;right: 0;margin-left: auto;margin-right: auto;" aria-hidden="false">
 							<div style="display: flex;justify-content: center;align-items: center;height: 50px;">
 								<div class="loader">
@@ -8571,46 +7933,40 @@
 						</div>
 					</div>
 					<div class="selection search">
-						<input type="text" placeholder="Search Activities" ng-model="activityFilter">
+						<input type="text" placeholder="Search sites" ng-model="activityFilter">
 						<ul>
 							<li ng-repeat="site in SitesList | filter: activityFilter ">
 								
-								<a ng-click="checkAppOnlineOrOffline();setSelectedSite(site);" onclick="dd_expand('#activityNewCodeEdit02')">
+								<a ng-click="setSelectedSite(site);" onclick="dd_expand('#activityNewCodeEdit02')">
 								{{site.Title}}</a>
 							</li>
-                          	<a style="margin: 0 20px;" ng-if="SitesList.length == 0">No Activity Codes </a>
+                          	<a style="margin: 0 20px;" ng-if="SitesList.length == 0">No Sites data </a>
 						</ul>
 					</div>
 				</div>
-
-				<!--Work Centre Dropdown-->
-				<!-- <div class="dropdown" style="width:100%;pointer-events: none;">
-					<div class="selected" ng-class="{focus: defaultWC !== '' ,lockdown: lockDaily==true}">
-						<input type="text" class="input" disabled="" ng-model="defaultWC" name="act" ng-value="defaultWC">
-						<div id="activityNewCodeEdit02" class="placeholder" onclick="dd_expand('#activityNewCodeEdit02')">
-							<span ng-click="showErrorIfNotSelectedJob('#activityNewCodeEdit02')" ng-if="defaultWC  == '' &amp;&amp; !loadingWC">Select Site</span>
-							<span ng-if="defaultWC !== ''&amp;&amp; !loadingWC">Work Centre</span>
-						</div>
-						<div ng-show="loadingWC" class="icon-container" style="inset: 0;width: 100%;height: 60px;position: absolute;left: 0;right: 0;margin-left: auto;margin-right: auto;" aria-hidden="false">
-							<div style="display: flex;justify-content: center;align-items: center;height: 50px;">
-								<div class="loader">
-								</div>
-								<div style="padding-left: 10px;">{{currentStatus}}</div>
-							</div>
-						</div>
-					</div>
-					
-					<div class="selection search">
-						<input type="text" placeholder="Search WorkCentre" ng-model="SearchWCText">
-						<ul>
-							<li ng-repeat="WCitem in WCS | filter: SearchWCText ">
-								<a ng-click="checkAppOnlineOrOffline();setdefaultWC(WCitem);" onclick="dd_expand('#activityNewCodeEdit02')">{{WCitem.WorkCentre === undefined ? WCitem.Code : WCitem.WorkCentre}} - {{WCitem.AlternateDescription === undefined ? WCitem.Description : WCitem.AlternateDescription}}</a>
-							</li>
-                          	<a style="margin: 0 20px;" ng-if="WCS.length == 0">No WorkCentre </a>
-						</ul>
-					</div>
+				<!-- <div class="inputbox" ng-class="{ focus:jobname !== '' ,lockdown: lockDaily==true}" style="width:100%; margin: 0">
+					<div class="placeholder" ng-style="subHeading">*Enter Job Code</div>
+					<i style="color:#777" class="fas fa-pencil-alt"></i>
+					<input id="dailyJobCode" type="text" ng-model="jobname" class="input">
 				</div> -->
-
+				<!-- Travel Hours -->
+				<div class="inputbox" ng-class="{ focus:TravelDataDaily.travelHr !== '' ,lockdown: lockDaily==true}" style="width:100%;margin-left: 0;margin-top: 0;">
+					<div class="placeholder" ng-style="subHeading">*Travel Hours</div>
+					<i style="color:#777" class="fas fa-pencil-alt"></i>
+					<input type="number" class="input" ng-model="TravelDataDaily.travelHr" inputmode="decimal" pattern="^\d*(\.\d{0,2})?$">
+				</div>
+				<div style="display: flex;justify-content: space-between;width:100%; margin: 0">
+					<div class="inputbox" ng-class="{ focus:TravelDataDaily.standBy !== '' ,lockdown: lockDaily==true}" style="width:49%;margin-right: 0;margin-left: 0;">
+						<div class="placeholder" ng-style="subHeading">Standby</div>
+						<i style="color:#777" class="fas fa-pencil-alt"></i>
+						<input type="number" class="input" ng-model="TravelDataDaily.standBy" inputmode="decimal" pattern="^\d*(\.\d{0,2})?$">
+					</div>
+					<div class="inputbox" ng-class="{ focus:TravelDataDaily.delay !== '' ,lockdown: lockDaily==true}" style="width:49%;margin-right: 0;margin-left: 0;">
+						<div class="placeholder" ng-style="subHeading">Delay</div>
+						<i style="color:#777" class="fas fa-pencil-alt"></i>
+						<input type="number" class="input" ng-model="TravelDataDaily.delay" inputmode="decimal" pattern="^\d*(\.\d{0,2})?$">
+					</div>
+				</div>
 
 				<div class="select" ng-class="{ focus:DailyUlb !== undefined ,lockdown: lockDaily==true}">
 					<label class="checkbox" style="color: #3c3c3c;">
@@ -8655,58 +8011,26 @@
 					</div>
 				</div>
 
-				<div class="repeat-container" ng-repeat="item in newLineItems">
-					<div class="sub-popup-header" ng-style="lineBTM">
-						<h3 ng-style="subHeading">Disbursements</h3>
-					</div>
-					<div>
-						<span style="float:right;color:#3c3c3c ;margin-top: -5px;padding-bottom: 10px;padding-right: 10px;">
-							<i ng-click="removeNewLineItem($index);" class="far fa-trash-alt fa-lg"></i>
-						</span>
-					</div>
-					<div class="dropdown" style="width:100%">
-						<div class="selected" ng-class="{focus: item.ActivityCode !== undefined &amp;&amp;item.ActivityCode !== '',lockdown: lockDaily==true }">
-							<input type="text" class="input" style="font-size: 15px;" ng-model="item.ActivityCode" name="act" ng-value="item.ActivityCode">
-							<div ng-attr-id="{{ 'ACDropDown-' + $index }}" class="placeholder" ng-click="dropdown_expand('#ACDropDown-' + $index)">
-								<span style="left: calc(50% - 105px);" ng-if="item.ActivityCode == undefined||item.ActivityCode == ''">- Select Disbursement Type -</span>
-								<span ng-if="item.ActivityCode !== undefined &amp;&amp;item.ActivityCode !== ''">Disbursement Type</span>
-							</div>
-							<i class="fas fa-caret-down"></i>
-						</div>	
-						
-						<div class="selection search">
-							<input type="text" placeholder="Search Activities" ng-model="disActivityFilter">
-							<ul>
-								<li ng-repeat="disActivity in ListManagersDisbursType | filter: disActivityFilter ">
-									<a ng-click="setSelectedDisActivity(disActivity, $parent.$index) ; dropdown_expand('#ACDropDown-' + $parent.$index)">{{disActivity.Value1}} - {{disActivity.Title}}</a>
-								</li>
-								<a style="margin: 0 20px;" ng-if="ListManagersDisbursType.length == 0">No allowance activity codes </a>
-							</ul>
-						</div>
-					</div>
-					<div class="inputbox" ng-class="{ focus:item.Quantity !== '',lockdown: lockDaily==true}" style="width:100%; margin: 25px 0px 20px;">
-						<div ng-if="item.ActivityCode == undefined || item.ActivityCode == ''" class="placeholder" ng-style="subHeading">Quantity</div>
-						<div ng-if="item.ActivityCode !== undefined && item.ActivityCode !== ''" class="placeholder" ng-style="subHeading">Quantity</div>
-						<i class="fas fa-pencil-alt"></i>
-						<input ng-attr-id="{{ 'hours-' + $index }}" type="number" inputmode="decimal" ng-keydown="allowTwoDigit('hours-' + $index)" pattern="^\d*(\.\d{0,2})?$" class="form-control" ng-model="item.Quantity">
-					</div>
-				</div>
-     
-				<button style="height: 50px;" ng-class="{lockdown: lockDaily==true}" ng-click="addLineItem()" class="addDisbursement" ng-style="button1">
-					<div style="display: flex;align-items: center;justify-content: space-between;"><span style="color: white;font-size: 18px;">Add Disbursements</span> <i class="fa fa-plus-circle" style="color: white;font-size: 18px;"></i></div>
-				</button>				
 
 				<div class="sub-popup-header" ng-style="lineBTM"></div>
      
-				<div class="textlongbox" ng-class="{ focus: StandardText !== undefined,lockdown: lockDaily==true}">
+				<!-- <div class="textlongbox" ng-class="{ focus: StandardText !== undefined,lockdown: lockDaily==true}">
 					<div class="note">
 						<div class="placeholder">Notes</div>
 						<i class="fas fa-pencil-alt" style="margin: -10px 0 ;"></i>
 					</div>
 					<textarea style="color: #000;" id="dailyNotes" type="text" ng-model="StandardText" class="input"></textarea>
 					
+				</div> -->
+
+				<div class="textlongbox" ng-class="{ focus: jobDesc !== undefined,lockdown: lockDaily==true}">
+					<div class="note">
+						<div class="placeholder">Job Description</div>
+						<i class="fas fa-pencil-alt" style="margin: -10px 0 ;"></i>
+					</div>
+					<textarea style="color: #000;" id="dailyNotes" type="text" ng-model="jobDesc" class="input"></textarea>
+					
 				</div>
-				
 				<!-- <div>
 					<div class="sub-popup-header" ng-style="lineBTM">
 						<h3 ng-style="subHeading">Attachments</h3>
@@ -8728,6 +8052,22 @@
 					</ul>
 				</div> -->
 				
+				<div class="inputbox" ng-show="showEmail" ng-class="{ focus:supervisorEmail !== '' ,lockdown: lockDaily==true}" style="width:100%; margin: 20px 0 15px">
+					<div class="placeholder" ng-style="subHeading">Approval email</div>
+					<input type="input" class="input" ng-model="supervisorEmail" ng-focus="showSVList=true">
+					<i class="fas fa-pencil-alt"></i>
+				</div>
+				<div class="signature" ng-show="showEmail">
+					<div class="signiturebox" ng-click="getSignatureCapture('Daily')" ng-class="{ focus: signature !== '',lockdown: lockDaily==true}" ng-style="border">
+						<div class="placeholder" ng-style="subHeading">Signature</div>
+						<div>{{signatureName}}</div>
+						<img ng-if="signature != ''" style="height: calc(100% - 20px); width: auto;" class="signature-img" src="{{signature}}">
+					</div>
+					<i ng-if="signature == ''" class="fas fa-pencil-alt"></i>
+					<i ng-if="signature != ''" class="fas fa-trash-alt fa-2x" style="color:red" onclick="clearSignature()"></i>
+
+				</div>
+
 			</div>
 		</div>
 
@@ -8828,19 +8168,19 @@
 				</div> -->
 
 				<div class="inputbox" ng-class="{focus: jobname !== '' ,lockdown: lockWeekly==true}" style="width:100%; margin: 0">
-					<div class="placeholder" ng-style="subHeading">Enter Job Code</div>
+					<div class="placeholder" ng-style="subHeading">*Enter Job Code</div>
 					<i style="color:#777" class="fas fa-pencil-alt"></i>
 					<input id="dailyJobCode" type="text" ng-model="jobname" class="input">
 				</div>
 
 				
 				<!--User List Dropdown-->
-                <div class="dropdown" style="width:100%; margin-top: 4px;">
+                <div class="dropdown" style="width:100%; margin-top: 10px;">
                     <div class="selected" ng-class="{focus: selectedUserNameList.length!= 0,lockdown: lockWeekly==true }">
                         <input type="text" class="input" ng-model="selectedUserNameList" name="act">
                         <div id="userSelectedEdit01" class="placeholder" onclick="dd_expand('#userSelectedEdit01')">
-                            <span ng-if="selectedUserNameList.length== 0 ">Select User</span>
-                            <span ng-if="selectedUserNameList.length!= 0">User</span>
+                            <span ng-if="selectedUserNameList.length== 0 ">*Select User</span>
+                            <span ng-if="selectedUserNameList.length!= 0">*User</span>
                         </div>
 
                         <i class="fas fa-caret-down"></i>
@@ -8867,15 +8207,11 @@
 					<div class="selected" ng-class="{focus: selectedSite.FullName !== undefined,lockdown: lockWeekly==true }">
 						<input type="text" class="input" disabled="" ng-model="selectedSite.FullName" name="act" ng-value="selectedSite.FullName">
 						
-						<!-- <div id="userSelectedEdit" class="placeholder" > -->
 						<div id="userSelectedEdit02" class="placeholder" onclick="dd_expand('#userSelectedEdit02')">
-							<span ng-click="showErrorIfNotSelectedJob('#userSelectedEdit02')" ng-if="selectedSite.FullName  == undefined &amp;&amp; !loadingAC">Select Site</span>
-							<span ng-if="selectedSite.FullName !== undefined &amp;&amp; !loadingAC">Site</span>
+							<span ng-if="selectedSite.FullName  == undefined &amp;&amp; !loadingAC">*Select Site</span>
+							<span ng-if="selectedSite.FullName !== undefined &amp;&amp; !loadingAC">*Site</span>
 						</div>
 						<i class="drop-down-arrow"></i>
-						<!-- <div ng-show="loadingAC" class="icon-container">
-							<i style="margin: 0 -1px 0 0px;" class="fas fa-spinner fa-spin"></i>
-						</div> -->
 						<div ng-show="loadingAC" class="icon-container" style="inset: 0;width: 100%;height: 60px;position: absolute;left: 0;right: 0;margin-left: auto;margin-right: auto;" aria-hidden="false">
 							<div style="display: flex;justify-content: center;align-items: center;height: 50px;">
 								<div class="loader">
@@ -8885,14 +8221,13 @@
 						</div>
 					</div>
 					<div class="selection search">
-						<input type="text" placeholder="Search Activities" ng-model="activityFilter">
+						<input type="text" placeholder="Search sites" ng-model="activityFilter">
 						<ul>
 							<li ng-repeat="site in SitesList | filter: activityFilter ">
-								
-								<a ng-click="checkAppOnlineOrOffline();setSelectedSite(site);" onclick="dd_expand('#userSelectedEdit02')">
+								<a ng-click="setSelectedSite(site);" onclick="dd_expand('#userSelectedEdit02')">
 								{{site.Title}}</a>
 							</li>
-                          	<a style="margin: 0 20px;" ng-if="SitesList.length == 0">No Activity Codes </a>
+                          	<a style="margin: 0 20px;" ng-if="SitesList.length == 0">No Sites data </a>
 						</ul>
 					</div>
 				</div>
@@ -8949,15 +8284,23 @@
 					<i class="fas fa-pencil-alt"></i>
 				</div> -->
 
-				<div class="textlongbox" ng-class="{ focus: StandardText !== undefined,lockdown: lockWeekly==true}">
+				<!-- <div class="textlongbox" ng-class="{ focus: StandardText !== undefined,lockdown: lockWeekly==true}">
 					<div class="note">
 						<div class="placeholder">Notes</div>
 						<i class="fas fa-pencil-alt" style="margin: -10px 0 ;"></i>
 					</div>
 					<textarea style="color: #000;" id="dailyNotes" type="text" ng-model="StandardText" class="input"></textarea>
 					
-				</div>
+				</div> -->
 
+				<div class="textlongbox" ng-class="{ focus: jobDesc !== undefined,lockdown: lockDaily==true}">
+					<div class="note">
+						<div class="placeholder">Job Description</div>
+						<i class="fas fa-pencil-alt" style="margin: -10px 0 ;"></i>
+					</div>
+					<textarea style="color: #000;" id="dailyNotes" type="text" ng-model="jobDesc" class="input"></textarea>
+					
+				</div>
 				<!-- <div>
 					<div class="sub-popup-header" ng-style="lineBTM">
 						<h3 ng-style="subHeading">Attachments</h3>
@@ -8979,6 +8322,21 @@
 					</ul>
 				</div> -->
 
+				<div ng-show="showEmail" class="inputbox content-50 right" style="width:100%; margin: 20px 0 15px" ng-class="{ focus: supervisorEmail !=='' ,lockdown: lockWeekly==true}">
+					<div class="placeholder" ng-style="subHeading">Approval email</div>
+					<input type="text" class="input" ng-model="supervisorEmail">
+					<i class="fas fa-pencil-alt"></i>
+				</div>
+				<div class="signature" ng-show="showEmail">
+					<div class="signiturebox" ng-click="getSignatureCapture('Weekly')" ng-class="{ focus: signature !== '',lockdown: lockWeekly==true}" ng-style="border">
+						<div class="placeholder" ng-style="subHeading">Signature</div>
+						<div>{{signatureName}}</div>
+						<img ng-if="signature != ''" style="height: calc(100% - 20px); width: auto;" class="signature-img" src="{{signature}}">
+					</div>
+					<i ng-if="signature == ''" class="fas fa-pencil-alt"></i>
+					<i ng-if="signature != ''" class="fas fa-trash-alt fa-2x" style="color:red" onclick="clearSignature()"></i>
+				</div>
+
 				<!-- Timesheet Cards -->
 				<div class="weekly-footer" ng-style="barWhite">
 
@@ -8988,7 +8346,7 @@
 							<h3 style="color:#000">Week Ending Date - {{rawOutputWEDate | date: 'dd/MM/yyyy'}}</h3>
 							
 						</div>
-						<div class="sub-header" style="height: 120px;" ng-class="{ lockdown: lockWeekly==true}">
+						<div class="sub-header"  ng-class="{ lockdown: lockWeekly==true}">
 							<h4 style="color:#000">Work Hours</h4>
 							<ul>
 								<li ng-repeat="hpd in hoursperday" style="background: white;">
